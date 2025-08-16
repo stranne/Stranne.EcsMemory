@@ -8,5 +8,5 @@
     <File Path="README.md" />
     <File Path="REQUIREMENTS.md" />
   </Folder>
-  <Project Path="Stranne.EcsMemory.csproj" />
+  <Project Path="Stranne.EcsMemory.GodotGame\Stranne.EcsMemory.GodotGame.csproj" />
 </Solution>

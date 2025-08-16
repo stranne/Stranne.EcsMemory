@@ -7,7 +7,7 @@
 ## 0) Scope & Constraints
 
 * 2D memory game (flip tiles to match pairs).
-* Logic is deterministic and lives in `Memory.Core` (no Godot types).
+* Logic is deterministic and lives in `Stranne.EcsMemory.Core` (no Godot types).
 * Godot is a thin shell: maps clicks → commands, pulls a render model → updates sprites.
 * A few focused unit tests validate core behavior.
 
@@ -16,24 +16,24 @@
 ## 1) Solution Layout
 
 ```
-/Memory/
-  Memory.Core            // Arch ECS logic (no Godot references)
-  Memory.GodotAdapter    // Thin bridge: queues commands, ticks world, returns RenderModel
-  Memory.GodotClient     // Godot 4.3 C# project (scenes, sprites, input)
-  Memory.Tests           // Unit tests for Memory.Core
+/Stranne.EcsMemory/
+  Stranne.EcsMemory.Core            // Arch ECS logic (no Godot references)
+  Stranne.EcsMemory.GodotAdapter    // Thin bridge: queues commands, ticks world, returns RenderModel
+  Stranne.EcsMemory.GodotGame       // Godot 4.3 C# project (scenes, sprites, input)
+  Stranne.EcsMemory.Tests           // Unit tests for Stranne.EcsMemory.Core
 ```
 
 ### ✅ Checklist
 
-* [ ] Create four projects (Core, Adapter, GodotClient, Tests).
-* [ ] Reference `Memory.Core` from `Memory.GodotAdapter` and `Memory.Tests`.
-* [ ] Reference both `Memory.Core` and `Memory.GodotAdapter` from `Memory.GodotClient`.
-* [ ] Add Arch ECS NuGet to `Memory.Core` (and tests if needed).
+* [ ] Create four projects (Core, Adapter, GodotGame, Tests).
+* [ ] Reference `Stranne.EcsMemory.Core` from `Stranne.EcsMemory.GodotAdapter` and `Stranne.EcsMemory.Tests`.
+* [ ] Reference both `Stranne.EcsMemory.Core` and `Stranne.EcsMemory.GodotAdapter` from `Stranne.EcsMemory.GodotGame`.
+* [ ] Add Arch ECS NuGet to `Stranne.EcsMemory.Core` (and tests if needed).
 * [ ] Choose test framework (xUnit/NUnit).
 
 ---
 
-## 2) Core Domain Model (Memory.Core)
+## 2) Core Domain Model (Stranne.EcsMemory.Core)
 
 ### Components (minimal, immutable-friendly)
 
@@ -64,7 +64,7 @@
 
 ---
 
-## 3) Systems (Memory.Core)
+## 3) Systems (Stranne.EcsMemory.Core)
 
 1. **BoardSetupSystem**
 
@@ -108,7 +108,7 @@
 
 ---
 
-## 4) Render DTO (Memory.Core → Adapter)
+## 4) Render DTO (Stranne.EcsMemory.Core → Adapter)
 
 ```csharp
 public sealed class RenderModel {
@@ -130,12 +130,12 @@ public sealed class RenderCard {
 
 ### ✅ Checklist
 
-* [ ] Create DTOs above in `Memory.Core` (or a shared project the adapter can see).
+* [ ] Create DTOs above in `Stranne.EcsMemory.Core` (or a shared project the adapter can see).
 * [ ] Ensure DTOs are engine-agnostic and serializable.
 
 ---
 
-## 5) World Lifecycle (Memory.Core)
+## 5) World Lifecycle (Stranne.EcsMemory.Core)
 
 Create a small builder/helper:
 
@@ -156,7 +156,7 @@ Create a small builder/helper:
 
 ---
 
-## 6) Adapter Layer (Memory.GodotAdapter)
+## 6) Adapter Layer (Stranne.EcsMemory.GodotAdapter)
 
 Responsibilities:
 
@@ -180,7 +180,7 @@ Implementation notes:
 
 ---
 
-## 7) Godot Client (Memory.GodotClient)
+## 7) Godot Client (Stranne.EcsMemory.GodotGame)
 
 ### Scene Skeleton
 
@@ -218,7 +218,7 @@ Implementation notes:
 
 ---
 
-## 8) Tests (Memory.Tests)
+## 8) Tests (Stranne.EcsMemory.Tests)
 
 Focus on **Core**; no Godot types.
 
