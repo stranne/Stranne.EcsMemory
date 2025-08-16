@@ -8,5 +8,17 @@
     <File Path="README.md" />
     <File Path="REQUIREMENTS.md" />
   </Folder>
+  <Project Path="Stranne.EcsMemory.Core.Tests/Stranne.EcsMemory.Core.Tests.csproj" Id="5d94fff1-3c54-4bc1-922a-5621f12c38ff">
+    <BuildType Solution="ExportDebug|*" Project="Release" />
+    <BuildType Solution="ExportRelease|*" Project="Release" />
+  </Project>
+  <Project Path="Stranne.EcsMemory.Core/Stranne.EcsMemory.Core.csproj" Id="b97d0660-d95f-4123-9098-a2107a8475bc">
+    <BuildType Solution="ExportDebug|*" Project="Release" />
+    <BuildType Solution="ExportRelease|*" Project="Release" />
+  </Project>
+  <Project Path="Stranne.EcsMemory.GodotAdapter/Stranne.EcsMemory.GodotAdapter.csproj" Id="06cc3375-e483-4e5b-90c4-096e4739b2e5">
+    <BuildType Solution="ExportDebug|*" Project="Release" />
+    <BuildType Solution="ExportRelease|*" Project="Release" />
+  </Project>
   <Project Path="Stranne.EcsMemory.GodotGame\Stranne.EcsMemory.GodotGame.csproj" />
 </Solution>

@@ -15,21 +15,20 @@
 
 ## 1) Solution Layout
 
-```
+```text
 /Stranne.EcsMemory/
   Stranne.EcsMemory.Core            // Arch ECS logic (no Godot references)
+  Stranne.EcsMemory.Core.Tests      // Unit tests for Stranne.EcsMemory.Core
   Stranne.EcsMemory.GodotAdapter    // Thin bridge: queues commands, ticks world, returns RenderModel
   Stranne.EcsMemory.GodotGame       // Godot 4.3 C# project (scenes, sprites, input)
-  Stranne.EcsMemory.Tests           // Unit tests for Stranne.EcsMemory.Core
 ```
 
 ### ✅ Checklist
 
-* [ ] Create four projects (Core, Adapter, GodotGame, Tests).
-* [ ] Reference `Stranne.EcsMemory.Core` from `Stranne.EcsMemory.GodotAdapter` and `Stranne.EcsMemory.Tests`.
-* [ ] Reference both `Stranne.EcsMemory.Core` and `Stranne.EcsMemory.GodotAdapter` from `Stranne.EcsMemory.GodotGame`.
+* [x] Create four projects (Core, GodotAdapter, GodotGame, Core.Tests).
+* [x] Reference `Stranne.EcsMemory.Core` from `Stranne.EcsMemory.GodotAdapter` and `Stranne.EcsMemory.Core.Tests`.
+* [x] Reference both and `Stranne.EcsMemory.GodotAdapter` from `Stranne.EcsMemory.GodotGame`.
 * [ ] Add Arch ECS NuGet to `Stranne.EcsMemory.Core` (and tests if needed).
-* [ ] Choose test framework (xUnit/NUnit).
 
 ---
 
@@ -218,7 +217,7 @@ Implementation notes:
 
 ---
 
-## 8) Tests (Stranne.EcsMemory.Tests)
+## 8) Tests (Stranne.EcsMemory.Core.Tests)
 
 Focus on **Core**; no Godot types.
 

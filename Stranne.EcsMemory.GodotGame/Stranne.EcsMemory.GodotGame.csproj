@@ -1,6 +1,6 @@
 <Project Sdk="Godot.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>Stranne.EcsMemory.GodotGame</RootNamespace>
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <LangVersion>latest</LangVersion>
@@ -29,9 +29,7 @@
     <RunTests>false</RunTests>
   </PropertyGroup>
 
-  <PropertyGroup Condition="
-        ('$(Configuration)' == 'Debug' or '$(Configuration)' == 'ExportDebug')
-        and '$(SkipTests)' != 'true' ">
+  <PropertyGroup Condition="&#xA;        ('$(Configuration)' == 'Debug' or '$(Configuration)' == 'ExportDebug')&#xA;        and '$(SkipTests)' != 'true' ">
     <RunTests>true</RunTests>
     <DefineConstants>$(DefineConstants);RUN_TESTS</DefineConstants>
   </PropertyGroup>
@@ -57,8 +55,12 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(RunTests)' != 'true'">
-    <Compile          Remove="test/**/*.cs" />
-    <None             Remove="test/**/*"    />
-    <EmbeddedResource Remove="test/**/*"    />
+    <Compile Remove="test/**/*.cs" />
+    <None Remove="test/**/*" />
+    <EmbeddedResource Remove="test/**/*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Stranne.EcsMemory.GodotAdapter\Stranne.EcsMemory.GodotAdapter.csproj" />
   </ItemGroup>
 </Project>
