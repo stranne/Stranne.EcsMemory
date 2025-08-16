@@ -1,4 +1,4 @@
-namespace Stranne.EcsMemory;
+namespace Stranne.EcsMemory.Test;
 
 using System.Threading.Tasks;
 using Chickensoft.GoDotTest;
@@ -7,11 +7,9 @@ using Chickensoft.GodotTestDriver.Drivers;
 using Godot;
 using Shouldly;
 
-public class GameTest : TestClass {
-  private Game _game = default!;
-  private Fixture _fixture = default!;
-
-  public GameTest(Node testScene) : base(testScene) { }
+public class GameTest(Node testScene) : TestClass(testScene) {
+  private Game _game = null!;
+  private Fixture _fixture = null!;
 
   [SetupAll]
   public async Task Setup() {

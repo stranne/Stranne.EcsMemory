@@ -16,7 +16,7 @@ using Chickensoft.GoDotTest;
 public partial class Main : Node2D {
   public Vector2I DesignResolution => Display.UHD4k;
 #if RUN_TESTS
-  public TestEnvironment Environment = default!;
+  public TestEnvironment Environment = null!;
 #endif
 
   public override void _Ready() {
@@ -28,13 +28,13 @@ public partial class Main : Node2D {
     // command line arguments and determine if we should run tests.
     Environment = TestEnvironment.From(OS.GetCmdlineArgs());
     if (Environment.ShouldRunTests) {
-      CallDeferred("RunTests");
+      CallDeferred(nameof(RunTests));
       return;
     }
 #endif
 
     // If we don't need to run tests, we can just switch to the game scene.
-    CallDeferred("RunScene");
+    CallDeferred(nameof(RunScene));
   }
 
 #if RUN_TESTS

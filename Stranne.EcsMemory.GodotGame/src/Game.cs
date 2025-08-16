@@ -3,7 +3,7 @@ namespace Stranne.EcsMemory;
 using Godot;
 
 public partial class Game : Control {
-  public Button TestButton { get; private set; } = default!;
+  public Button TestButton { get; private set; } = null!;
   public int ButtonPresses { get; private set; }
 
   public override void _Ready()

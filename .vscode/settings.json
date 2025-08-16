@@ -174,5 +174,10 @@
       "icon": "terminal-powershell",
       "source": "PowerShell"
     }
-  }
+  },
+  "cSpell.words": [
+    "Olof",
+    "replayability",
+    "Stranne"
+  ]
 }
