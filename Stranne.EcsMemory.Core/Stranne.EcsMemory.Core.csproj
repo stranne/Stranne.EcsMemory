@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Arch" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Stranne.EcsMemory.GodotAdapter\Stranne.EcsMemory.GodotAdapter.csproj" />
   </ItemGroup>
 

@@ -28,7 +28,7 @@
 * [x] Create four projects (Core, GodotAdapter, GodotGame, Core.Tests).
 * [x] Reference `Stranne.EcsMemory.Core` from `Stranne.EcsMemory.GodotAdapter` and `Stranne.EcsMemory.Core.Tests`.
 * [x] Reference both and `Stranne.EcsMemory.GodotAdapter` from `Stranne.EcsMemory.GodotGame`.
-* [ ] Add Arch ECS NuGet to `Stranne.EcsMemory.Core` (and tests if needed).
+* [x] Add Arch ECS NuGet to `Stranne.EcsMemory.Core` (and tests if needed).
 
 ---
 
