@@ -4,5 +4,9 @@
     <BuildType Name="ExportDebug" />
     <BuildType Name="ExportRelease" />
   </Configurations>
+  <Folder Name="/docs/">
+    <File Path="README.md" />
+    <File Path="REQUIREMENTS.md" />
+  </Folder>
   <Project Path="Stranne.EcsMemory.csproj" />
 </Solution>
