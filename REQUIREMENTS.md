@@ -47,7 +47,6 @@
 * `GameState { int FlipsThisTurn; int Moves; bool IsLocked; Entity? FirstFlipped; }`
 * `PendingEvaluation { int TicksLeft }` *(added only while waiting)*
 * `Config { int Cols; int Rows; int EvalDelayTicks; int Seed; }`
-* `Rng { Random Random }`
 
 ### Commands
 
@@ -56,8 +55,8 @@
 
 ### ✅ Checklist
 
-* [ ] Define all components as small structs/classes.
-* [ ] Define `GameState`, `Config`, `Rng` singletons.
+* [x] Define all components as small structs/classes.
+* [x] Define `GameState`, `Config` singletons.
 * [ ] Define `ICommandQueue` and `CommandQueue`.
 * [ ] Keep **no** rendering or engine types in Core.
 
