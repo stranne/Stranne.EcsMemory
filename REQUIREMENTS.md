@@ -97,7 +97,7 @@
 
 ### ✅ Checklist
 
-* [ ] Implement `BoardSetupSystem`.
+* [x] Implement `BoardSetupSystem`.
 * [ ] Implement `FlipRequestSystem` with command dequeue.
 * [ ] Implement `MatchSystem` with countdown lock.
 * [ ] Implement `WinCheckSystem`.
