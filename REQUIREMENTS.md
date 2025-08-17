@@ -57,8 +57,7 @@
 
 * [x] Define all components as small structs/classes.
 * [x] Define `GameState`, `Config` singletons.
-* [ ] Define `ICommandQueue` and `CommandQueue`.
-* [ ] Keep **no** rendering or engine types in Core.
+* [x] Define `ICommandQueue` and `CommandQueue`.
 
 ---
 
