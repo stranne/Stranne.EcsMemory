@@ -16,7 +16,8 @@
     "**/*.dll",
     "**/bin/**/*.*",
     "**/obj/**/*.*",
-    "addons/**/*.*"
+    "addons/**/*.*",
+    "*.DotSettings"
   ],
   "words": [
     "animatable",
@@ -61,6 +62,7 @@
     "NOLOGO",
     "nupkg",
     "occluder",
+    "Olof",
     "omni",
     "Omnisharp",
     "opencover",
@@ -71,10 +73,12 @@
     "randomizer",
     "raymarch",
     "renovatebot",
+    "replayability",
     "reportgenerator",
     "reporttypes",
     "Shouldly",
     "spir",
+    "Stranne",
     "subfolders",
     "targetargs",
     "targetdir",
