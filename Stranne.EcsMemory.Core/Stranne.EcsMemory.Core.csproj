@@ -9,6 +9,7 @@
 	<ItemGroup>
 		<PackageReference Include="Arch" Version="2.1.0" />
 		<PackageReference Include="Arch.System" Version="1.1.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
 	</ItemGroup>
 
 	<ItemGroup>

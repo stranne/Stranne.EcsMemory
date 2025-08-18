@@ -98,7 +98,7 @@
 ### ✅ Checklist
 
 * [x] Implement `BoardSetupSystem`.
-* [ ] Implement `FlipRequestSystem` with command dequeue.
+* [x] Implement `FlipRequestSystem` with command dequeue.
 * [ ] Implement `MatchSystem` with countdown lock.
 * [ ] Implement `WinCheckSystem`.
 * [ ] Implement `RenderQuerySystem` that builds `RenderModel`.

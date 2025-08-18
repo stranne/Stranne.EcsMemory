@@ -2,6 +2,7 @@
 using Stranne.EcsMemory.Core.Components.Singleton;
 using Stranne.EcsMemory.Core.Components.Tags;
 using Stranne.EcsMemory.Core.Components.Value;
+using Stranne.EcsMemory.Core.Extensions;
 
 namespace Stranne.EcsMemory.Core.Utils;
 internal static class BoardSetupUtil
@@ -69,28 +70,11 @@ internal static class BoardSetupUtil
         }
     }
 
-    private static void ResetGameState(World world)
-    {
-        var gameState = new GameState
+    private static void ResetGameState(World world) =>
+        world.SetOrCreateSingleton(new GameState
         {
             FirstFlipped = null,
             IsLocked = false,
             Moves = 0
-        };
-
-        var queryGameState = new QueryDescription()
-            .WithAll<GameState>();
-        Entity gameStateEntity = default;
-        var found = false;
-        world.Query(in queryGameState, (ref Entity entity, ref GameState _) =>
-        {
-            gameStateEntity = entity;
-            found = true;
         });
-
-        if (found)
-            world.Set(gameStateEntity, gameState);
-        else
-            world.Create(gameState);
-    }
 }

@@ -42,7 +42,7 @@ internal sealed class BoardSetupUtilTest
         var seen = new HashSet<(int x, int y)>();
         var withinBounds = true;
 
-        world.Query(in gridPositionQuery, (ref Entity entity, ref GridPosition gridPosition) =>
+        world.Query(in gridPositionQuery, (Entity _, ref GridPosition gridPosition) =>
         {
             withinBounds &= gridPosition.X >= 0 && gridPosition.X < config.Cols && gridPosition.Y >= 0 && gridPosition.Y < config.Rows;
             seen.Add((gridPosition.X, gridPosition.Y));
@@ -61,7 +61,7 @@ internal sealed class BoardSetupUtilTest
 
         var gridPositionQuery = new QueryDescription().WithAll<GridPosition>();
         var counts = new Dictionary<PairKey, int>();
-        world.Query(in gridPositionQuery, (ref Entity _, ref PairKey pairKey) =>
+        world.Query(in gridPositionQuery, (Entity _, ref PairKey pairKey) =>
         {
             ref var slot = ref CollectionsMarshal.GetValueRefOrAddDefault(counts, pairKey, out var exists);
             if (!exists) slot = 0;
@@ -87,11 +87,11 @@ internal sealed class BoardSetupUtilTest
         var map1 = new Dictionary<GridPosition, PairKey>();
         var map2 = new Dictionary<GridPosition, PairKey>();
 
-        world1.Query(in gridPositionQuery, (ref Entity _, ref GridPosition gridPosition, ref PairKey pairKey) =>
+        world1.Query(in gridPositionQuery, (Entity _, ref GridPosition gridPosition, ref PairKey pairKey) =>
         {
             map1[gridPosition] = pairKey;
         });
-        world2.Query(in gridPositionQuery, (ref Entity _, ref GridPosition gridPosition, ref PairKey pairKey) =>
+        world2.Query(in gridPositionQuery, (Entity _, ref GridPosition gridPosition, ref PairKey pairKey) =>
         {
             map2[gridPosition] = pairKey;
         });
@@ -112,7 +112,7 @@ internal sealed class BoardSetupUtilTest
             var cardQuery = new QueryDescription().WithAll<CardId>();
             bool anyMatched = false, anyRevealed = false, allSelectable = true;
 
-            world.Query(in cardQuery, (ref Entity entity) =>
+            world.Query(in cardQuery, (entity) =>
             {
                 anyMatched |= world.Has<Matched>(entity);
                 anyRevealed |= world.Has<Revealed>(entity);
@@ -125,8 +125,8 @@ internal sealed class BoardSetupUtilTest
 
             var gameStateQuery = new QueryDescription().WithAll<GameState>();
             var found = false;
-            var gameState = default(GameState);
-            world.Query(in gameStateQuery, (ref Entity entity, ref GameState state) =>
+            GameState gameState = default;
+            world.Query(in gameStateQuery, (Entity _, ref GameState state) =>
             {
                 found = true;
                 gameState = state;
