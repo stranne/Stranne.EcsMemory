@@ -2,6 +2,8 @@
 using Stranne.EcsMemory.Core.Components.Singleton;
 using Stranne.EcsMemory.Core.Components.Tags;
 using Stranne.EcsMemory.Core.Components.Value;
+using Stranne.EcsMemory.Core.Extensions;
+using Stranne.EcsMemory.Core.Tests.Common;
 using Stranne.EcsMemory.Core.Utils;
 using System.Runtime.InteropServices;
 
@@ -11,8 +13,8 @@ internal sealed class BoardSetupUtilTest
     [Test]
     public void BuildBoard_Throws_OnOddCellCount()
     {
-        var world = World.Create();
-        var config = new Config { Cols = 3, Rows = 3, EvalDelayTicks = 10, Seed = 0 };
+        var world = TestWorldFactory.Create(3, 3);
+        var config = world.GetSingletonRef<Config>();
 
         Assert.Throws<ArgumentException>(() => BoardSetupUtil.BuildBoard(world, config));
     }
@@ -20,8 +22,8 @@ internal sealed class BoardSetupUtilTest
     [Test]
     public async Task BuildBoard_Creates_Exactly_ColsTimesRows_Cards()
     {
-        var world = World.Create();
-        var config = new Config { Cols = 2, Rows = 2, EvalDelayTicks = 10, Seed = 0 };
+        var world = TestWorldFactory.Create();
+        var config = world.GetSingletonRef<Config>();
         var expectedCardCount = config.Cols * config.Rows;
 
         BoardSetupUtil.BuildBoard(world, config);
@@ -34,8 +36,9 @@ internal sealed class BoardSetupUtilTest
     [Test]
     public async Task BuildBoard_Assigns_Unique_GridPositions_WithinBounds()
     {
-        var world = World.Create();
-        var config = new Config(4, 3, 10, 123);
+        var world = TestWorldFactory.Create();
+        var config = world.GetSingletonRef<Config>();
+
         BoardSetupUtil.BuildBoard(world, config);
 
         var gridPositionQuery = new QueryDescription().WithAll<GridPosition>();
@@ -48,15 +51,19 @@ internal sealed class BoardSetupUtilTest
             seen.Add((gridPosition.X, gridPosition.Y));
         });
 
-        await Assert.That(withinBounds).IsTrue();
-        await Assert.That(seen.Count).IsEqualTo(config.Cols * config.Rows);
+        using (Assert.Multiple())
+        {
+            await Assert.That(withinBounds).IsTrue();
+            await Assert.That(seen.Count).IsEqualTo(config.Cols * config.Rows);
+        }
     }
 
     [Test]
     public async Task BuildBoard_Ensures_Exact_Two_Of_Each_PairKey()
     {
-        var world = World.Create();
-        var config = new Config(4, 3, 10, 123);
+        var world = TestWorldFactory.Create();
+        var config = world.GetSingletonRef<Config>();
+
         BoardSetupUtil.BuildBoard(world, config);
 
         var gridPositionQuery = new QueryDescription().WithAll<GridPosition>();
@@ -68,20 +75,18 @@ internal sealed class BoardSetupUtilTest
             slot++;
         });
 
-        await Assert.That(counts.Values).All().Satisfy(x => x.IsEqualTo(2));
-        await Assert.That(counts.Count).IsEqualTo(config.Cols * config.Rows / 2);
+        using (Assert.Multiple())
+        {
+            await Assert.That(counts.Values).All().Satisfy(x => x.IsEqualTo(2));
+            await Assert.That(counts.Count).IsEqualTo(config.Cols * config.Rows / 2);
+        }
     }
 
     [Test]
     public async Task BuildBoard_IsDeterministic_WithSameSeed()
     {
-        var config = new Config(4, 3, 10, 777);
-
-        var world1 = World.Create();
-        BoardSetupUtil.BuildBoard(world1, config);
-
-        var world2 = World.Create();
-        BoardSetupUtil.BuildBoard(world2, config);
+        var world1 = TestWorldFactory.Create();
+        var world2 = TestWorldFactory.Create();
 
         var gridPositionQuery = new QueryDescription().WithAll<GridPosition>();
         var map1 = new Dictionary<GridPosition, PairKey>();
@@ -102,8 +107,8 @@ internal sealed class BoardSetupUtilTest
     [Test]
     public async Task BuildBoard_StartsClean_NoMatched_NoRevealed_AllSelectable_AndGameStateReset()
     {
-        var world = World.Create();
-        var config = new Config(4, 3, 10, 123);
+        var world = TestWorldFactory.Create();
+        var config = world.GetSingletonRef<Config>();
 
         BoardSetupUtil.BuildBoard(world, config);
 
@@ -142,8 +147,8 @@ internal sealed class BoardSetupUtilTest
     [Test]
     public async Task BuildBoard_Rebuilds_ClearsPreviousCards_AndKeepsDeterminism()
     {
-        var world = World.Create();
-        var config = new Config(4, 3, 10, 123);
+        var world = TestWorldFactory.Create();
+        var config = world.GetSingletonRef<Config>();
 
         BoardSetupUtil.BuildBoard(world, config);
         BoardSetupUtil.BuildBoard(world, config);
