@@ -12,20 +12,20 @@ internal static class BoardSetupUtil
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(config.Cols);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(config.Rows);
 
-        var total = config.Cols * config.Rows;
-        if ((total & 1) != 0)
+        var totalCards = config.Cols * config.Rows;
+        if ((totalCards & 1) != 0)
             throw new ArgumentException("Board size must be even (Cols * Rows).", nameof(config));
 
-        CreateNewCards(world, config, total);
-        ResetGameState(world);
+        CreateNewCards(world, config, totalCards);
+        ResetGameState(world, totalCards);
     }
 
-    private static void CreateNewCards(World world, Config config, int total)
+    private static void CreateNewCards(World world, Config config, int totalCards)
     {
         DestroyAnyExistingCards(world);
 
-        var deck = new PairKey[total];
-        for (int cardIndex = 0, pairIndex = 0; pairIndex < total / 2; pairIndex++)
+        var deck = new PairKey[totalCards];
+        for (int cardIndex = 0, pairIndex = 0; pairIndex < totalCards / 2; pairIndex++)
         {
             deck[cardIndex++] = new PairKey(pairIndex);
             deck[cardIndex++] = new PairKey(pairIndex);
@@ -70,11 +70,14 @@ internal static class BoardSetupUtil
         }
     }
 
-    private static void ResetGameState(World world) =>
+    private static void ResetGameState(World world, int totalCards) =>
         world.SetOrCreateSingleton(new GameState
         {
             FirstFlipped = null,
             IsLocked = false,
-            Moves = 0
+            Moves = 0,
+            IsWon = false,
+            TotalCards = totalCards,
+            MatchedCount = 0
         });
 }

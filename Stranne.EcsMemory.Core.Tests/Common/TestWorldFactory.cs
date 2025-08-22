@@ -5,14 +5,17 @@ using Stranne.EcsMemory.Core.Extensions;
 namespace Stranne.EcsMemory.Core.Tests.Common;
 internal static class TestWorldFactory
 {
-    public static World Create(int cols = 4, int rows = 3, int evalDelayTicks = 10, int seed = 123, bool isLocked = false)
+    public static World Create(int cols = 4, int rows = 3, int evalDelayTicks = 10, int seed = 123, bool isLocked = false, bool isWon = false, int totalCards = 0, int matchedCount = 0)
     {
         var world = World.Create();
         world.SetOrCreateSingleton(new GameState
         {
             IsLocked = isLocked,
             FirstFlipped = null,
-            Moves = 0
+            Moves = 0,
+            IsWon = isWon,
+            TotalCards = totalCards,
+            MatchedCount = matchedCount
         });
         world.SetOrCreateSingleton(new Config(cols, rows, evalDelayTicks, seed));
         return world;

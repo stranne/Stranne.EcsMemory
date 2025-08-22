@@ -100,7 +100,7 @@
 * [x] Implement `BoardSetupSystem`.
 * [x] Implement `FlipRequestSystem` with command dequeue.
 * [x] Implement `MatchSystem` with countdown lock.
-* [ ] Implement `WinCheckSystem`.
+* [x] Implement `WinCheckSystem`.
 * [ ] Implement `RenderQuerySystem` that builds `RenderModel`.
 
 ---

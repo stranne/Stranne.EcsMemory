@@ -28,9 +28,15 @@ internal sealed class BoardSetupUtilTest
 
         BoardSetupUtil.BuildBoard(world, config);
 
-        var queryCards = new QueryDescription().WithAll<CardId>();
-        var cardCount = world.CountEntities(in queryCards);
-        await Assert.That(cardCount).IsEqualTo(expectedCardCount);
+        using (Assert.Multiple())
+        {
+            var queryCards = new QueryDescription().WithAll<CardId>();
+            var cardCount = world.CountEntities(in queryCards);
+            await Assert.That(cardCount).IsEqualTo(expectedCardCount);
+
+            var gameState = world.GetSingletonRef<GameState>();
+            await Assert.That(gameState.TotalCards).IsEqualTo(expectedCardCount);
+        }
     }
 
     [Test]

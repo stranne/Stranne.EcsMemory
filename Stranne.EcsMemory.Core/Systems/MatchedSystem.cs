@@ -30,6 +30,9 @@ internal sealed class MatchedSystem(World world)
             {
                 World.Add<Matched>(firstEntity);
                 World.Add<Matched>(secondEntity);
+
+                ref var gameState = ref World.GetSingletonRef<GameState>();
+                gameState.MatchedCount += 2;
             }
             else
             {

@@ -70,6 +70,7 @@ internal sealed class MatchedSystemTest
             await Assert.That(gameState.IsLocked).IsFalse();
             await Assert.That(gameState.FirstFlipped).IsNull();
             await Assert.That(gameState.Moves).IsEqualTo(1);
+            await Assert.That(gameState.MatchedCount).IsEqualTo(2);
         }
     }
 
@@ -97,6 +98,7 @@ internal sealed class MatchedSystemTest
             await Assert.That(gameState.IsLocked).IsFalse();
             await Assert.That(gameState.FirstFlipped).IsNull();
             await Assert.That(gameState.Moves).IsEqualTo(1);
+            await Assert.That(gameState.MatchedCount).IsEqualTo(0);
         }
     }
 
@@ -120,6 +122,7 @@ internal sealed class MatchedSystemTest
             await Assert.That(gameState.IsLocked).IsFalse();
             await Assert.That(gameState.FirstFlipped).IsNull();
             await Assert.That(gameState.Moves).IsEqualTo(1);
+            await Assert.That(gameState.MatchedCount).IsEqualTo(0);
         }
     }
 
