@@ -54,13 +54,17 @@ internal sealed class RenderSystemTest
     public async Task RenderQuery_FacePolicy(bool isRevealed, bool isMatched, bool expectedIsFacedUp)
     {
         var world = TestWorldFactory.Create();
-        _ = world.CreateCard(revealed: isRevealed, matched: isMatched);
+        _ = world.CreateCard(pairKey: 1, revealed: isRevealed, matched: isMatched);
         var sut = new RenderSystem(world);
 
         sut.Update(0);
 
         var renderedCard = sut.RenderModel.Cards.Single();
         await Assert.That(renderedCard.IsFacedUp).IsEqualTo(expectedIsFacedUp);
+        if (expectedIsFacedUp)
+            await Assert.That(renderedCard.PairKey).IsEqualTo(1);
+        else
+            await Assert.That(renderedCard.PairKey).IsNull();
     }
 
     [Test]

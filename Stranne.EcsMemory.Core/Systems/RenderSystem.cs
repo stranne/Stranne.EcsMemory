@@ -43,14 +43,19 @@ internal sealed class RenderSystem(World world)
         {
             var isRevealed = World.Has<Revealed>(entity);
             var isMatched = World.Has<Matched>(entity);
+            var isFacedUp = isRevealed || isMatched;
+            var pairKey = isFacedUp
+                ? World.Get<PairKey>(entity).Value
+                : (int?)null;
 
             cards.Add(new RenderCard
             {
                 Id = cardId.Value,
                 X = gridPosition.X,
                 Y = gridPosition.Y,
-                IsFacedUp = isRevealed || isMatched,
-                IsMatched = isMatched
+                IsFacedUp = isFacedUp,
+                IsMatched = isMatched,
+                PairKey = pairKey
             });
         });
         cards.Sort((a, b) => a.Y != b.Y ? a.Y.CompareTo(b.Y) : a.X.CompareTo(b.X));
