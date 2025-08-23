@@ -79,7 +79,7 @@ internal sealed class MatchedSystem(World world)
                 if (lowestId != int.MaxValue)
                 {
                     secondLowestKeyIdEntity = lowestKeyIdEntity;
-                    secondLowestId = secondLowestKeyIdEntity.Id;
+                    secondLowestId = lowestId;
                 }
 
                 lowestKeyIdEntity = currentEntity;
