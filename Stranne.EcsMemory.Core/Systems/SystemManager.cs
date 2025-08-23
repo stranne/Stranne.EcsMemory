@@ -32,7 +32,7 @@ internal sealed class SystemManager : IDisposable
 
     public RenderModel RenderModel => _renderSystem.RenderModel;
 
-    public void Tick(float deltaTime)
+    public void Update(float deltaTime)
     {
         _systems.BeforeUpdate(in deltaTime);
         _systems.Update(in deltaTime);

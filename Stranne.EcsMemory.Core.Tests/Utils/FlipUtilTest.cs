@@ -11,7 +11,7 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 namespace Stranne.EcsMemory.Core.Tests.Utils;
 internal sealed class FlipUtilTest
 {
-    private const int EvalDelayTicks = 10;
+    private const int EvalDelayUpdates = 10;
 
     private static readonly GridPosition GridPosition = new(0, 0);
     private static readonly ILogger Logger = new NullLoggerFactory().CreateLogger(nameof(FlipUtilTest));
@@ -119,7 +119,7 @@ internal sealed class FlipUtilTest
             await Assert.That(gameState.Moves).IsEqualTo(0);
             await AssertNumberOfRevealed(world, 2);
             await AssertNumberOfPendingEvaluations(world, 1);
-            await AssertPendingEvaluationDelayEquals(world, EvalDelayTicks);
+            await AssertPendingEvaluationDelayEquals(world, EvalDelayUpdates);
         }
     }
 
@@ -162,6 +162,6 @@ internal sealed class FlipUtilTest
             found = true;
         });
         await Assert.That(found).IsTrue();
-        await Assert.That(pendingEvaluation.TicksLeft).IsEqualTo(expected);
+        await Assert.That(pendingEvaluation.UpdatesLeft).IsEqualTo(expected);
     }
 }

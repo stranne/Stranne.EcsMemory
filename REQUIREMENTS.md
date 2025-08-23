@@ -172,8 +172,8 @@ Implementation notes:
 
 ### ✅ Checklist
 
-* [ ] Implement the adapter class with above API.
-* [ ] Ensure no Godot types leak into adapter.
+* [x] Implement the adapter class with above API.
+* [x] Ensure no Godot types leak into adapter.
 
 ---
 

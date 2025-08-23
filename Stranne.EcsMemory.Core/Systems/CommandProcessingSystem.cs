@@ -12,7 +12,7 @@ namespace Stranne.EcsMemory.Core.Systems;
 internal sealed class CommandProcessingSystem(World world, ICommandBuffer buffer, ILogger<CommandProcessingSystem> logger)
     : BaseSystem<World, float>(world)
 {
-    private const int EvalDelayTicks = 10;
+    private const int EvalDelayUpdates = 10;
 
     public override void Update(in float _)
     {
@@ -21,7 +21,7 @@ internal sealed class CommandProcessingSystem(World world, ICommandBuffer buffer
             switch (command)
             {
                 case StartNewGame startNewGame:
-                    var config = new Config(startNewGame.Columns, startNewGame.Rows, EvalDelayTicks, startNewGame.Seed);
+                    var config = new Config(startNewGame.Columns, startNewGame.Rows, EvalDelayUpdates, startNewGame.Seed);
                     World.SetOrCreateSingleton(config);
 
                     BoardSetupUtil.BuildBoard(World, config);

@@ -42,7 +42,7 @@ internal static class FlipUtil
             gameState.IsLocked = true;
 
             var config = world.GetSingletonRef<Config>();
-            world.Create(new PendingEvaluation { TicksLeft = config.EvalDelayTicks });
+            world.Create(new PendingEvaluation { UpdatesLeft = config.EvalDelayUpdates });
 
             logger.LogDebug("Flipped second card at {GridPosition}, evaluation pending.", flipGridPosition);
         }

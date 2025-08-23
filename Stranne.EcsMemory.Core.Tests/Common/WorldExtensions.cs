@@ -29,8 +29,8 @@ internal static class WorldExtensions
         return entity;
     }
 
-    public static Entity CreatePending(this World world, int ticksLeft = 1) =>
-        world.Create(new PendingEvaluation { TicksLeft = ticksLeft });
+    public static Entity CreatePending(this World world, int updatesLeft = 1) =>
+        world.Create(new PendingEvaluation { UpdatesLeft = updatesLeft });
 
     public static bool HasAny<T>(this World world) where T : struct
     {

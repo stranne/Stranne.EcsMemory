@@ -27,7 +27,7 @@ internal sealed class MatchedSystemTest
     }
 
     [Test]
-    public async Task MatchSystem_TicksDown_UntilZero_NoResolveBeforeZero()
+    public async Task MatchSystem_UpdatesDown_UntilZero_NoResolveBeforeZero()
     {
         var world = TestWorldFactory.Create();
         var sut = new MatchedSystem(world);

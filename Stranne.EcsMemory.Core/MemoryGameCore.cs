@@ -6,8 +6,7 @@ using Stranne.EcsMemory.Core.Commands.Abstractions;
 using Stranne.EcsMemory.Core.Systems;
 
 namespace Stranne.EcsMemory.Core;
-public sealed class MemoryGameCore
-    : IDisposable
+public sealed class MemoryGameCore : IDisposable
 {
     private readonly World _world;
     private readonly SystemManager _systemManager;
@@ -35,8 +34,8 @@ public sealed class MemoryGameCore
     public void FlipCardAt(int x, int y) =>
         _commandBuffer.Enqueue(new FlipCardAt(x, y));
 
-    public void Tick(float deltaTime) =>
-        _systemManager.Tick(deltaTime);
+    public void Update(float deltaTime) =>
+        _systemManager.Update(deltaTime);
 
     public RenderModel RenderModel =>
         _systemManager.RenderModel;

@@ -9,6 +9,9 @@ namespace Stranne.EcsMemory.Core.Systems;
 internal sealed class MatchedSystem(World world)
     : BaseSystem<World, float>(world)
 {
+    internal static readonly QueryDescription PendingEvaluationQuery = new QueryDescription().WithAll<PendingEvaluation>();
+    internal static readonly QueryDescription RevealedUnmatchedQuery = new QueryDescription().WithAll<CardId, Revealed>().WithNone<Matched>();
+
     public override void Update(in float _)
     {
         if (!TryGetPendingEvaluationEntity(out var pendingEvaluationEntity))
@@ -16,8 +19,8 @@ internal sealed class MatchedSystem(World world)
 
         ref var pendingEvaluation = ref World.Get<PendingEvaluation>(pendingEvaluationEntity);
 
-        pendingEvaluation.TicksLeft--;
-        if (pendingEvaluation.TicksLeft > 0)
+        pendingEvaluation.UpdatesLeft--;
+        if (pendingEvaluation.UpdatesLeft > 0)
             return;
 
         if (TryGetTwoRevealedUnmatched(out var firstEntity, out var secondEntity))
@@ -49,7 +52,7 @@ internal sealed class MatchedSystem(World world)
         Entity outerEntity = default;
         var found = false;
 
-        World.Query(in Cache.PendingEvaluationQuery, innerEntity =>
+        World.Query(in PendingEvaluationQuery, innerEntity =>
         {
             if (found)
                 return;
@@ -68,7 +71,7 @@ internal sealed class MatchedSystem(World world)
         var lowestId = int.MaxValue;
         var secondLowestId = int.MaxValue;
 
-        World.Query(in Cache.RevealedUnmatchedQuery, (Entity currentEntity, ref CardId cardId) =>
+        World.Query(in RevealedUnmatchedQuery, (Entity currentEntity, ref CardId cardId) =>
         {
             var currentId = cardId.Value;
             if (currentId < lowestId)
@@ -113,10 +116,4 @@ internal sealed class MatchedSystem(World world)
 
     private void RemovePendingEvaluation(Entity pendingEvaluationEntity) =>
         World.Destroy(pendingEvaluationEntity);
-
-    private static class Cache
-    {
-        internal static readonly QueryDescription PendingEvaluationQuery = new QueryDescription().WithAll<PendingEvaluation>();
-        internal static readonly QueryDescription RevealedUnmatchedQuery = new QueryDescription().WithAll<CardId, Revealed>().WithNone<Matched>();
-    }
 }

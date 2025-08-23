@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Stranne.EcsMemory.Contracts\Stranne.EcsMemory.Contracts.csproj" />
+    <ProjectReference Include="..\Stranne.EcsMemory.Core\Stranne.EcsMemory.Core.csproj" />
   </ItemGroup>
 
 </Project>
