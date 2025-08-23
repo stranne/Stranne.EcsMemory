@@ -8,6 +8,10 @@
     <File Path="README.md" />
     <File Path="REQUIREMENTS.md" />
   </Folder>
+  <Project Path="Stranne.EcsMemory.Contracts/Stranne.EcsMemory.Contracts.csproj" Id="6a030e9d-f68f-4d92-8816-9f2e9a873e59">
+    <BuildType Solution="ExportDebug|*" Project="Release" />
+    <BuildType Solution="ExportRelease|*" Project="Release" />
+  </Project>
   <Project Path="Stranne.EcsMemory.Core.Tests/Stranne.EcsMemory.Core.Tests.csproj" Id="5d94fff1-3c54-4bc1-922a-5621f12c38ff">
     <BuildType Solution="ExportDebug|*" Project="Release" />
     <BuildType Solution="ExportRelease|*" Project="Release" />

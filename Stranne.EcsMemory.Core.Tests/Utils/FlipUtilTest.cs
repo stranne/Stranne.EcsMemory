@@ -48,7 +48,7 @@ internal sealed class FlipUtilTest
     public async Task TryFlip_AlreadyMatched_DoesNotFlipCard()
     {
         var world = TestWorldFactory.Create();
-        world.CreateCard(match: true);
+        world.CreateCard(matched: true);
 
         FlipUtil.TryFlip(world, GridPosition, Logger);
 

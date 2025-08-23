@@ -46,6 +46,8 @@ internal static class FlipUtil
 
             logger.LogDebug("Flipped second card at {GridPosition}, evaluation pending.", flipGridPosition);
         }
+
+        gameState.StateVersion++;
     }
 
     private static bool TryGetCardToFlipByGridPosition(World world, GridPosition flipGridPosition, out Entity cardEntity)

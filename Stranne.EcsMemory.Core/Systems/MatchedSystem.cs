@@ -6,11 +6,10 @@ using Stranne.EcsMemory.Core.Components.Value;
 using Stranne.EcsMemory.Core.Extensions;
 
 namespace Stranne.EcsMemory.Core.Systems;
-
 internal sealed class MatchedSystem(World world)
-    : BaseSystem<World, int>(world)
+    : BaseSystem<World, float>(world)
 {
-    public override void Update(in int _)
+    public override void Update(in float _)
     {
         if (!TryGetPendingEvaluationEntity(out var pendingEvaluationEntity))
             return;
@@ -109,6 +108,7 @@ internal sealed class MatchedSystem(World world)
         gameState.Moves++;
         gameState.FirstFlipped = null;
         gameState.IsLocked = false;
+        gameState.StateVersion++;
     }
 
     private void RemovePendingEvaluation(Entity pendingEvaluationEntity) =>

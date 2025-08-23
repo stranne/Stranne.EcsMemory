@@ -14,7 +14,7 @@ internal static class BoardSetupUtil
 
         var totalCards = config.Cols * config.Rows;
         if ((totalCards & 1) != 0)
-            throw new ArgumentException("Board size must be even (Cols * Rows).", nameof(config));
+            throw new ArgumentException("Board size must be even (Columns * Rows).", nameof(config));
 
         CreateNewCards(world, config, totalCards);
         ResetGameState(world, totalCards);
@@ -78,6 +78,7 @@ internal static class BoardSetupUtil
             Moves = 0,
             IsWon = false,
             TotalCards = totalCards,
-            MatchedCount = 0
+            MatchedCount = 0,
+            StateVersion = 0
         });
 }

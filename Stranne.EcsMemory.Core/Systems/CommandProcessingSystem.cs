@@ -10,24 +10,24 @@ using Stranne.EcsMemory.Core.Utils;
 
 namespace Stranne.EcsMemory.Core.Systems;
 internal sealed class CommandProcessingSystem(World world, ICommandBuffer buffer, ILogger<CommandProcessingSystem> logger)
-    : BaseSystem<World, int>(world)
+    : BaseSystem<World, float>(world)
 {
     private const int EvalDelayTicks = 10;
 
-    public override void Update(in int _)
+    public override void Update(in float _)
     {
         while (buffer.TryDequeue(out var command))
         {
             switch (command)
             {
                 case StartNewGame startNewGame:
-                    var config = new Config(startNewGame.Cols, startNewGame.Rows, EvalDelayTicks, startNewGame.Seed);
+                    var config = new Config(startNewGame.Columns, startNewGame.Rows, EvalDelayTicks, startNewGame.Seed);
                     World.SetOrCreateSingleton(config);
 
                     BoardSetupUtil.BuildBoard(World, config);
                     break;
-                case FlipAtGrid flipAtGrid:
-                    var gridPosition = new GridPosition(flipAtGrid.X, flipAtGrid.Y);
+                case FlipCardAt flipCardAt:
+                    var gridPosition = new GridPosition(flipCardAt.X, flipCardAt.Y);
                     FlipUtil.TryFlip(World, gridPosition, logger);
                     break;
                 default:

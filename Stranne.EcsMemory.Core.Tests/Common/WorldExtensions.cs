@@ -11,7 +11,7 @@ internal static class WorldExtensions
         int cardId = 0,
         int pairKey = 0,
         bool revealed = false,
-        bool match = false,
+        bool matched = false,
         int x = 0,
         int y = 0)
     {
@@ -23,7 +23,7 @@ internal static class WorldExtensions
 
         if (revealed)
             world.Add<Revealed>(entity);
-        if (match)
+        if (matched)
             world.Add<Matched>(entity);
 
         return entity;

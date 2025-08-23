@@ -5,9 +5,9 @@ using Stranne.EcsMemory.Core.Extensions;
 
 namespace Stranne.EcsMemory.Core.Systems;
 internal sealed class WinCheckSystem(World world)
-    : BaseSystem<World, int>(world)
+    : BaseSystem<World, float>(world)
 {
-    public override void Update(in int _)
+    public override void Update(in float _)
     {
         ref var gameState = ref World.GetSingletonRef<GameState>();
         if (gameState.IsWon ||
@@ -17,5 +17,6 @@ internal sealed class WinCheckSystem(World world)
 
         gameState.IsLocked = true;
         gameState.IsWon = true;
+        gameState.StateVersion++;
     }
 }

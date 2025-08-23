@@ -101,7 +101,7 @@
 * [x] Implement `FlipRequestSystem` with command dequeue.
 * [x] Implement `MatchSystem` with countdown lock.
 * [x] Implement `WinCheckSystem`.
-* [ ] Implement `RenderQuerySystem` that builds `RenderModel`.
+* [x] Implement `RenderQuerySystem` that builds `RenderModel`.
 
 ---
 
@@ -127,8 +127,8 @@ public sealed class RenderCard {
 
 ### ✅ Checklist
 
-* [ ] Create DTOs above in `Stranne.EcsMemory.Core` (or a shared project the adapter can see).
-* [ ] Ensure DTOs are engine-agnostic and serializable.
+* [x] Create DTOs above in `Stranne.EcsMemory.Core` (or a shared project the adapter can see).
+* [x] Ensure DTOs are engine-agnostic and serializable.
 
 ---
 
@@ -147,9 +147,9 @@ Create a small builder/helper:
 
 ### ✅ Checklist
 
-* [ ] Implement a factory to build and seed the world.
-* [ ] Decide a fixed system order and keep it consistent (determinism).
-* [ ] Expose `Tick()` and `GetRenderModel()`.
+* [x] Implement a factory to build and seed the world.
+* [x] Decide a fixed system order and keep it consistent (determinism).
+* [x] Expose `Tick()` and `GetRenderModel()`.
 
 ---
 

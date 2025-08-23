@@ -1,3 +1,3 @@
 namespace Stranne.EcsMemory.Core.Commands.Abstractions;
 
-public abstract record GameCommand;
+internal abstract record GameCommand;
