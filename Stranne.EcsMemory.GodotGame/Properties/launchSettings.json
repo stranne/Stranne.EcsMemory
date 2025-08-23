@@ -3,14 +3,14 @@
     "🕹 Debug Game": {
       "commandName": "Executable",
       "executablePath": "%GODOT%",
-      "commandLineArgs": "--path \"$(ProjectDir)\" --run-tests --quit-on-finish",
-      "workingDirectory": "$(SolutionDir)\\Stranne.EcsMemory.GodotGame"
+      "commandLineArgs": "--verbose",
+      "workingDirectory": "$(ProjectDir)"
     },
     "🧪 Debug Tests": {
       "commandName": "Executable",
       "executablePath": "%GODOT%",
-      "commandLineArgs": "--path \"$(ProjectDir)\" --run-tests --quit-on-finish",
-      "workingDirectory": "$(SolutionDir)\\Stranne.EcsMemory.GodotGame"
+      "commandLineArgs": "--run-tests --quit-on-finish",
+      "workingDirectory": "$(ProjectDir)"
     }
   }
 }
