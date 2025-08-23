@@ -70,40 +70,21 @@ internal sealed class MatchedSystem(World world, ILogger<MatchedSystem> logger)
 
     private bool TryGetTwoRevealedUnmatched(out Entity entity1, out Entity entity2)
     {
-        Entity lowestKeyIdEntity = default, secondLowestKeyIdEntity = default;
-        var lowestId = int.MaxValue;
-        var secondLowestId = int.MaxValue;
+        var candidates = new List<(Entity entity, int cardId)>();
 
-        World.Query(in RevealedUnmatchedQuery, (Entity currentEntity, ref CardId cardId) =>
-        {
-            var currentId = cardId.Value;
-            if (currentId < lowestId)
-            {
-                if (lowestId != int.MaxValue)
-                {
-                    secondLowestKeyIdEntity = lowestKeyIdEntity;
-                    secondLowestId = lowestId;
-                }
+        World.Query(in RevealedUnmatchedQuery, (Entity currentEntity, ref CardId cardId) => 
+            candidates.Add((currentEntity, cardId.Value)));
 
-                lowestKeyIdEntity = currentEntity;
-                lowestId = currentId;
-            }
-            else if (currentId < secondLowestId)
-            {
-                secondLowestKeyIdEntity = currentEntity;
-                secondLowestId = currentId;
-            }
-        });
-
-        if (secondLowestId == int.MaxValue)
+        if (candidates.Count < 2)
         {
             entity1 = default;
             entity2 = default;
             return false;
         }
 
-        entity1 = lowestKeyIdEntity;
-        entity2 = secondLowestKeyIdEntity;
+        candidates.Sort((a, b) => a.cardId.CompareTo(b.cardId));
+        entity1 = candidates[0].entity;
+        entity2 = candidates[1].entity;
         return true;
     }
 
