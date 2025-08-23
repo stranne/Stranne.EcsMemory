@@ -24,8 +24,8 @@ public partial class Game : Control
 
 	public override void _Ready()
 	{
-		ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_columns, 0);
-		ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(_rows, 0);
+		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_columns);
+		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_rows);
 
 		_grid = GetNode<GridContainer>("%CardGrid");
 		_movesLabel = GetNode<Label>("%MovesLabel");

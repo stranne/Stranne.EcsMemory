@@ -25,6 +25,7 @@ internal sealed class CommandProcessingSystem(World world, ICommandBuffer buffer
                     World.SetOrCreateSingleton(config);
 
                     BoardSetupUtil.BuildBoard(World, config);
+                    logger.LogDebug("Started new game: {Columns}x{Rows}, seed: {Seed}", startNewGame.Columns, startNewGame.Rows, startNewGame.Seed);
                     break;
                 case FlipCardAt flipCardAt:
                     var gridPosition = new GridPosition(flipCardAt.X, flipCardAt.Y);

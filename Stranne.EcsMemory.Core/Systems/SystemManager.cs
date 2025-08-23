@@ -16,8 +16,8 @@ internal sealed class SystemManager : IDisposable
     public SystemManager(World world, ICommandBuffer commandBuffer, ILoggerFactory loggerFactory)
     {
         _commandProcessingSystem = new CommandProcessingSystem(world, commandBuffer, loggerFactory.CreateLogger<CommandProcessingSystem>());
-        _matchedSystem = new MatchedSystem(world);
-        _winCheckSystem = new WinCheckSystem(world);
+        _matchedSystem = new MatchedSystem(world, loggerFactory.CreateLogger<MatchedSystem>());
+        _winCheckSystem = new WinCheckSystem(world, loggerFactory.CreateLogger<WinCheckSystem>());
         _renderSystem = new RenderSystem(world);
 
         _systems = new Group<float>(

@@ -1,12 +1,13 @@
 ﻿using Arch.Core;
 using Arch.System;
+using Microsoft.Extensions.Logging;
 using Stranne.EcsMemory.Core.Components.Singleton;
 using Stranne.EcsMemory.Core.Components.Tags;
 using Stranne.EcsMemory.Core.Components.Value;
 using Stranne.EcsMemory.Core.Extensions;
 
 namespace Stranne.EcsMemory.Core.Systems;
-internal sealed class MatchedSystem(World world)
+internal sealed class MatchedSystem(World world, ILogger<MatchedSystem> logger)
     : BaseSystem<World, float>(world)
 {
     internal static readonly QueryDescription PendingEvaluationQuery = new QueryDescription().WithAll<PendingEvaluation>();
@@ -35,11 +36,13 @@ internal sealed class MatchedSystem(World world)
 
                 ref var gameState = ref World.GetSingletonRef<GameState>();
                 gameState.MatchedCount += 2;
+                logger.LogDebug("Match found: pair {PairKey} ({MatchedCount}/{TotalCards})", pairKeyA.Value, gameState.MatchedCount, gameState.TotalCards);
             }
             else
             {
                 World.Remove<Revealed>(firstEntity);
                 World.Remove<Revealed>(secondEntity);
+                logger.LogDebug("No match: {PairKeyA} != {PairKeyB}", pairKeyA.Value, pairKeyB.Value);
             }
         }
 

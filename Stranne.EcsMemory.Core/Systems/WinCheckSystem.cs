@@ -1,10 +1,11 @@
 ﻿using Arch.Core;
 using Arch.System;
+using Microsoft.Extensions.Logging;
 using Stranne.EcsMemory.Core.Components.Singleton;
 using Stranne.EcsMemory.Core.Extensions;
 
 namespace Stranne.EcsMemory.Core.Systems;
-internal sealed class WinCheckSystem(World world)
+internal sealed class WinCheckSystem(World world, ILogger<WinCheckSystem> logger)
     : BaseSystem<World, float>(world)
 {
     public override void Update(in float _)
@@ -18,5 +19,6 @@ internal sealed class WinCheckSystem(World world)
         gameState.IsLocked = true;
         gameState.IsWon = true;
         gameState.StateVersion++;
+        logger.LogDebug("Game won in {Moves} moves!", gameState.Moves);
     }
 }
