@@ -10,14 +10,10 @@ config_version=5
 
 [application]
 
-config/name="Stranne.EcsMemory"
-run/main_scene="res://src/Main.tscn"
-config/features=PackedStringArray("4.3", "C#", "Mobile")
+config/name="Stranne.EcsMemory.GodotGame"
+run/main_scene="res://Scenes/Main.tscn"
+config/features=PackedStringArray("4.4", "C#", "Mobile")
 config/icon="res://icon.png"
-
-[dotnet]
-
-project/assembly_name="Stranne.EcsMemory"
 
 [display]
 
@@ -26,6 +22,10 @@ window/size/viewport_height=720
 window/size/initial_position_type=3
 window/size/window_width_override=1280
 window/size/window_height_override=720
+
+[dotnet]
+
+project/assembly_name="Stranne.EcsMemory.GodotGame"
 
 [gui]
 

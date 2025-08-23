@@ -6,7 +6,6 @@
   </Configurations>
   <Folder Name="/docs/">
     <File Path="README.md" />
-    <File Path="REQUIREMENTS.md" />
   </Folder>
   <Project Path="Stranne.EcsMemory.Contracts/Stranne.EcsMemory.Contracts.csproj" Id="6a030e9d-f68f-4d92-8816-9f2e9a873e59">
     <BuildType Solution="ExportDebug|*" Project="Release" />

@@ -10,6 +10,7 @@ public sealed class MemoryAdapter : IDisposable
 
     private readonly MemoryGameCore _memoryGameCore;
     private bool _wasWon;
+    private int _lastVersion;
 
     public MemoryAdapter(ILoggerFactory? loggerFactory = null)
     {
@@ -35,7 +36,14 @@ public sealed class MemoryAdapter : IDisposable
 
         _wasWon = model.IsWon;
     }
-    
+
+    public bool HasRenderModelChanged()
+    {
+        var hasRenderModelChanged = _memoryGameCore.RenderModel.Version != _lastVersion;
+        _lastVersion = _memoryGameCore.RenderModel.Version;
+        return hasRenderModelChanged;
+    }
+
     public void Dispose() => 
         _memoryGameCore.Dispose();
 }
