@@ -4,7 +4,7 @@ using Stranne.EcsMemory.Contracts;
 using Stranne.EcsMemory.Contracts.Event;
 using Stranne.EcsMemory.Core;
 
-namespace Stranne.EcsMemory.GodotAdapter;
+namespace Stranne.EcsMemory.Adapter;
 public sealed class MemoryAdapter : IDisposable
 {
     public event Action<WonEvent>? Won;

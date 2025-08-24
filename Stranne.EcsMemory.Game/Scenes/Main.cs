@@ -11,7 +11,7 @@ using System.Reflection;
 // If you want to edit your game's main entry-point, please see Game.tscn and
 // Game.cs instead.
 
-namespace Stranne.EcsMemory.GodotGame.Scenes;
+namespace Stranne.EcsMemory.Game.Scenes;
 public partial class Main : Node2D {
   public static Vector2I DesignResolution => Display.UHD4k;
 #if RUN_TESTS

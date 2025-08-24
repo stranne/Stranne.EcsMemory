@@ -2,12 +2,12 @@ using System;
 using Godot;
 using Godot.Collections;
 using Microsoft.Extensions.Logging;
+using Stranne.EcsMemory.Adapter;
 using Stranne.EcsMemory.Contracts;
 using Stranne.EcsMemory.Contracts.Event;
-using Stranne.EcsMemory.GodotAdapter;
-using Stranne.EcsMemory.GodotGame.Utils;
+using Stranne.EcsMemory.Game.Utils;
 
-namespace Stranne.EcsMemory.GodotGame.Scenes;
+namespace Stranne.EcsMemory.Game.Scenes;
 public partial class Game : Control
 {
 	private readonly MemoryAdapter _memoryAdapter = new(GodotLoggerFactory.Instance);

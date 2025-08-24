@@ -19,9 +19,9 @@
     <BuildType Solution="ExportDebug|*" Project="Release" />
     <BuildType Solution="ExportRelease|*" Project="Release" />
   </Project>
-  <Project Path="Stranne.EcsMemory.GodotAdapter/Stranne.EcsMemory.GodotAdapter.csproj" Id="06cc3375-e483-4e5b-90c4-096e4739b2e5">
+  <Project Path="Stranne.EcsMemory.Adapter/Stranne.EcsMemory.Adapter.csproj" Id="06cc3375-e483-4e5b-90c4-096e4739b2e5">
     <BuildType Solution="ExportDebug|*" Project="Release" />
     <BuildType Solution="ExportRelease|*" Project="Release" />
   </Project>
-  <Project Path="Stranne.EcsMemory.GodotGame\Stranne.EcsMemory.GodotGame.csproj" />
+  <Project Path="Stranne.EcsMemory.Game/Stranne.EcsMemory.Game.csproj" />
 </Solution>

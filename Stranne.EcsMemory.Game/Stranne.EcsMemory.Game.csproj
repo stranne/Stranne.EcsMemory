@@ -4,7 +4,7 @@
 		<EnableDynamicLoading>true</EnableDynamicLoading>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
-		<RootNamespace>Stranne.EcsMemory.GodotGame</RootNamespace>
+		<RootNamespace>Stranne.EcsMemory.Game</RootNamespace>
 		<!-- Catch compiler-mismatch issues with the Introspection generator as early as possible -->
 		<WarningsAsErrors>CS9057</WarningsAsErrors>
 		<!-- Required for some nuget packages to work -->
@@ -60,7 +60,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Stranne.EcsMemory.GodotAdapter\Stranne.EcsMemory.GodotAdapter.csproj" />
+		<ProjectReference Include="..\Stranne.EcsMemory.Adapter\Stranne.EcsMemory.Adapter.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

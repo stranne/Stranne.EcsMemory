@@ -1,6 +1,6 @@
 using System;
 
-namespace Stranne.EcsMemory.GodotGame.Utils;
+namespace Stranne.EcsMemory.Game.Utils;
 internal sealed class GodotNullScope : IDisposable
 {
     public static GodotNullScope Instance { get; } = new();
