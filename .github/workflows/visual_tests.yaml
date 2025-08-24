@@ -41,7 +41,7 @@ jobs:
           global-json-file: global.json
 
       - name: 📦 Restore Dependencies
-        run: dotnet restore
+        run: dotnet restore Stranne.EcsMemory.Game/Stranne.EcsMemory.Game.csproj
 
       - name: 💾 Add Graphics Driver Emulators Source
         run: |
@@ -67,11 +67,11 @@ jobs:
           version: global.json
 
       - name: 🧑‍🔬 Generate .NET Bindings
-        run: godot --headless --build-solutions --quit || exit 0
+        run: godot --path Stranne.EcsMemory.Game --headless --build-solutions --quit || exit 0
 
       - name: 🌋 Run Tests in Godot
         run: |
-          xvfb-run godot --audio-driver Dummy --rendering-driver ${{ matrix.render-driver }} --run-tests --quit-on-finish --coverage
+          xvfb-run godot --path Stranne.EcsMemory.Game --audio-driver Dummy --rendering-driver ${{ matrix.render-driver }} --run-tests --quit-on-finish --coverage
 
           # The --coverage flag is used by GoDotTest to control the exit code
           # of Godot by force-exiting through C#.

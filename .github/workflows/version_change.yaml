@@ -17,7 +17,7 @@ jobs:
       - name: "📝 Change Version"
         uses: vers-one/dotnet-project-version-updater@v1.7
         with:
-          file: "Stranne.EcsMemory.csproj"
+          file: "Stranne.EcsMemory.Game/Stranne.EcsMemory.Game.csproj"
           version: ${{ github.event.inputs.version }}
 
       - name: "⤴️ Create Pull Request"
@@ -28,8 +28,8 @@ jobs:
           commit-message: >
             update version to ${{ github.event.inputs.version }}
           title: >
-            "chore(project): update version to
+            "chore: update version to
             ${{ github.event.inputs.version }}"
           body: >
-            chore(project): update the version to
+            chore: update the version to
             ${{ github.event.inputs.version }}.
