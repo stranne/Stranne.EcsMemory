@@ -30,6 +30,7 @@ project/assembly_name="Stranne.EcsMemory.Game"
 [gui]
 
 theme/default_theme_scale=2.0
+theme/custom="uid://cg577ugdixae0"
 theme/default_font_multichannel_signed_distance_field=true
 theme/default_font_generate_mipmaps=true
 
