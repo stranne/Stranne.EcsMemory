@@ -118,7 +118,7 @@ public partial class Game : Control
 	}
 
 	private void ShowWinMessage(WonEvent wonEvent) =>
-		_logger.LogInformation("You won after {WinInfoMoves} moves! 🎉", wonEvent.Moves);
+		_logger.LogInformation("You won after {WonEventMoves} moves! 🎉", wonEvent.Moves);
 
 	public override void _ExitTree()
 	{
