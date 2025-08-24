@@ -19,6 +19,13 @@
 *.ogx filter=lfs diff=lfs merge=lfs -text
 *.ogv filter=lfs diff=lfs merge=lfs -text
 
+# Font formats
+*.ttf filter=lfs diff=lfs merge=lfs -text
+*.otf filter=lfs diff=lfs merge=lfs -text
+*.ttc filter=lfs diff=lfs merge=lfs -text
+*.woff filter=lfs diff=lfs merge=lfs -text
+*.woff2 filter=lfs diff=lfs merge=lfs -text
+
 # 3D formats
 *.gltf filter=lfs diff=lfs merge=lfs -text
 *.blend filter=lfs diff=lfs merge=lfs -text
