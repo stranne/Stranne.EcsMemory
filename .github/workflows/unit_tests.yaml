@@ -1,0 +1,39 @@
+name: "🧪 Unit Tests"
+on:
+  push:
+  pull_request:
+
+jobs:
+  unit_tests:
+    name: "🧪 Unit Tests"
+    # Prevents duplicate workflows from running on PR's that originate from the
+    # repository itself.
+    if: >
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name !=
+        github.event.pull_request.base.repo.full_name
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      DOTNET_NOLOGO: true
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: 🧾 Checkout
+        uses: actions/checkout@v4
+
+      - name: 💽 Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          # Use the .NET SDK from global.json in the root of the repository.
+          global-json-file: global.json
+
+      - name: 📦 Restore Dependencies
+        run: dotnet restore Stranne.EcsMemory.Core.Tests/Stranne.EcsMemory.Core.Tests.csproj
+
+      - name: 🔨 Build
+        run: dotnet build Stranne.EcsMemory.Core.Tests/Stranne.EcsMemory.Core.Tests.csproj --no-restore
+
+      - name: 🧪 Run Unit Tests
+        run: dotnet test Stranne.EcsMemory.Core.Tests/Stranne.EcsMemory.Core.Tests.csproj --no-build --verbosity normal
