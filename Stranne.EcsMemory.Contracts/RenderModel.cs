@@ -1,5 +1,4 @@
 ﻿namespace Stranne.EcsMemory.Contracts;
-
 public sealed record RenderModel
 {
     public required IReadOnlyList<RenderCard> Cards { get; init; }

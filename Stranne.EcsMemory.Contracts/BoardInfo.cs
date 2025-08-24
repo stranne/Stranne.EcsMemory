@@ -1,5 +1,4 @@
 ﻿namespace Stranne.EcsMemory.Contracts;
-
 public sealed record BoardInfo
 {
     public required int Rows { get; init; }

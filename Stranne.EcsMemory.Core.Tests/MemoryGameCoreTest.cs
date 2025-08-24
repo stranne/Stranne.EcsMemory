@@ -1,6 +1,6 @@
 ﻿using Stranne.EcsMemory.Core.Commands;
+using Stranne.EcsMemory.Core.Commands.Abstractions;
 using Stranne.EcsMemory.Core.Tests.Common;
-using CommandBuffer = Stranne.EcsMemory.Core.Commands.Abstractions.CommandBuffer;
 
 namespace Stranne.EcsMemory.Core.Tests;
 internal sealed class MemoryGameCoreTest

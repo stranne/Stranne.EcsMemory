@@ -1,7 +1,6 @@
 ﻿using Arch.Core;
 using Stranne.EcsMemory.Core.Extensions;
 using Stranne.EcsMemory.Core.Tests.Common;
-using TUnit.Assertions.AssertConditions.Throws;
 
 namespace Stranne.EcsMemory.Core.Tests.Extensions;
 internal sealed class WorldSingletonExtensionsTest

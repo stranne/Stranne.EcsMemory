@@ -1,5 +1,4 @@
 ﻿namespace Stranne.EcsMemory.Contracts;
-
 public sealed record RenderCard
 {
     public required int Id { get; init; }
