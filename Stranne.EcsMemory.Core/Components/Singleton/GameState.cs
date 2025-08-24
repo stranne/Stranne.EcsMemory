@@ -1,7 +1,6 @@
-namespace Stranne.EcsMemory.Core.Components.Singleton;
-
 using Arch.Core;
 
+namespace Stranne.EcsMemory.Core.Components.Singleton;
 internal struct GameState
 {
     public int Moves;

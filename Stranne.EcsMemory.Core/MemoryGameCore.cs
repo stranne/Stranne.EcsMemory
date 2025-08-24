@@ -1,6 +1,7 @@
 ﻿using Arch.Core;
 using Microsoft.Extensions.Logging;
 using Stranne.EcsMemory.Contracts;
+using Stranne.EcsMemory.Contracts.Event;
 using Stranne.EcsMemory.Core.Commands;
 using Stranne.EcsMemory.Core.Commands.Abstractions;
 using Stranne.EcsMemory.Core.Systems;
@@ -36,6 +37,9 @@ public sealed class MemoryGameCore : IDisposable
 
     public void Update(float deltaTime) =>
         _systemManager.Update(deltaTime);
+
+    public IList<IGameEvent> PopEvents() =>
+        _systemManager.PopEvents();
 
     public RenderModel RenderModel =>
         _systemManager.RenderModel;

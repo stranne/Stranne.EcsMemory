@@ -2,6 +2,7 @@
 using Arch.System;
 using Microsoft.Extensions.Logging;
 using Stranne.EcsMemory.Contracts;
+using Stranne.EcsMemory.Contracts.Event;
 using Stranne.EcsMemory.Core.Commands.Abstractions;
 
 namespace Stranne.EcsMemory.Core.Systems;
@@ -12,6 +13,7 @@ internal sealed class SystemManager : IDisposable
     private readonly MatchedSystem _matchedSystem;
     private readonly WinCheckSystem _winCheckSystem;
     private readonly RenderSystem _renderSystem;
+    private readonly EventDrainSystem _eventDrainSystem;
 
     public SystemManager(World world, ICommandBuffer commandBuffer, ILoggerFactory loggerFactory)
     {
@@ -19,18 +21,23 @@ internal sealed class SystemManager : IDisposable
         _matchedSystem = new MatchedSystem(world, loggerFactory.CreateLogger<MatchedSystem>());
         _winCheckSystem = new WinCheckSystem(world, loggerFactory.CreateLogger<WinCheckSystem>());
         _renderSystem = new RenderSystem(world);
+        _eventDrainSystem = new EventDrainSystem(world);
 
         _systems = new Group<float>(
             typeof(SystemManager).FullName,
             _commandProcessingSystem,
             _matchedSystem,
             _winCheckSystem,
-            _renderSystem);
+            _renderSystem,
+            _eventDrainSystem);
 
         _systems.Initialize();
     }
 
     public RenderModel RenderModel => _renderSystem.RenderModel;
+
+    public IList<IGameEvent> PopEvents() =>
+        _eventDrainSystem.PopEvents();
 
     public void Update(float deltaTime)
     {
@@ -46,5 +53,6 @@ internal sealed class SystemManager : IDisposable
         _matchedSystem.Dispose();
         _winCheckSystem.Dispose();
         _renderSystem.Dispose();
+        _eventDrainSystem.Dispose();
     }
 }

@@ -3,6 +3,7 @@ using Godot;
 using Godot.Collections;
 using Microsoft.Extensions.Logging;
 using Stranne.EcsMemory.Contracts;
+using Stranne.EcsMemory.Contracts.Event;
 using Stranne.EcsMemory.GodotAdapter;
 using Stranne.EcsMemory.GodotGame.Utils;
 
@@ -116,8 +117,8 @@ public partial class Game : Control
 		Update();
 	}
 
-	private void ShowWinMessage(WinInfo winInfo) =>
-		_logger.LogInformation("You won after {WinInfoMoves} moves! 🎉", winInfo.Moves);
+	private void ShowWinMessage(WonEvent wonEvent) =>
+		_logger.LogInformation("You won after {WinInfoMoves} moves! 🎉", wonEvent.Moves);
 
 	public override void _ExitTree()
 	{

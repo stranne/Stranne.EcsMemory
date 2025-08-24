@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Environment = System.Environment;
 
 namespace Stranne.EcsMemory.GodotGame.Utils;
-
 internal sealed class GodotLogger(string category, LogLevel minLevel) : ILogger
 {
     public IDisposable BeginScope<TState>(TState state) where TState : notnull => 

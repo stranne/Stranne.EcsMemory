@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
 
 namespace Stranne.EcsMemory.GodotGame.Utils;
-
 /// <summary>
 /// ILoggerFactory that forwards logs to Godot's GD.* methods.
 /// </summary>

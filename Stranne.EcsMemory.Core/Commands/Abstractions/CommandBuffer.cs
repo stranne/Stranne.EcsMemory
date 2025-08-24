@@ -1,5 +1,4 @@
 namespace Stranne.EcsMemory.Core.Commands.Abstractions;
-
 internal class CommandBuffer : ICommandBuffer
 {
     private readonly Queue<GameCommand> _buffer = new();

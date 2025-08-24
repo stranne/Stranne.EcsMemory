@@ -1,15 +1,15 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Stranne.EcsMemory.Contracts;
+using Stranne.EcsMemory.Contracts.Event;
 using Stranne.EcsMemory.Core;
 
 namespace Stranne.EcsMemory.GodotAdapter;
 public sealed class MemoryAdapter : IDisposable
 {
-    public event Action<WinInfo>? Won;
+    public event Action<WonEvent>? Won;
 
     private readonly MemoryGameCore _memoryGameCore;
-    private bool _wasWon;
     private int _lastVersion;
 
     public MemoryAdapter(ILoggerFactory? loggerFactory = null)
@@ -29,12 +29,7 @@ public sealed class MemoryAdapter : IDisposable
     public void Update(float deltaTime)
     {
         _memoryGameCore.Update(deltaTime);
-
-        var model = _memoryGameCore.RenderModel;
-        if (!_wasWon && model.IsWon)
-            Won?.Invoke(new WinInfo(model.Moves, model.Cards.Count, DateTimeOffset.UtcNow));
-
-        _wasWon = model.IsWon;
+        ProcessEvents();
     }
 
     public bool HasRenderModelChanged()
@@ -42,6 +37,19 @@ public sealed class MemoryAdapter : IDisposable
         var hasRenderModelChanged = _memoryGameCore.RenderModel.Version != _lastVersion;
         _lastVersion = _memoryGameCore.RenderModel.Version;
         return hasRenderModelChanged;
+    }
+
+    private void ProcessEvents()
+    {
+        foreach (var @event in _memoryGameCore.PopEvents())
+        {
+            switch (@event)
+            {
+                case WonEvent wonEvent:
+                    Won?.Invoke(wonEvent);
+                    break;
+            }
+        }
     }
 
     public void Dispose() => 

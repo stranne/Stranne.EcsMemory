@@ -2,8 +2,6 @@ using Chickensoft.GameTools.Displays;
 using Chickensoft.GoDotTest;
 using Godot;
 
-namespace Stranne.EcsMemory.GodotGame.Scenes;
-
 #if RUN_TESTS
 using System.Reflection;
 #endif
@@ -13,6 +11,7 @@ using System.Reflection;
 // If you want to edit your game's main entry-point, please see Game.tscn and
 // Game.cs instead.
 
+namespace Stranne.EcsMemory.GodotGame.Scenes;
 public partial class Main : Node2D {
   public static Vector2I DesignResolution => Display.UHD4k;
 #if RUN_TESTS

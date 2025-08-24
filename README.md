@@ -29,10 +29,13 @@ This project is an **exploration** of using [Arch ECS](https://arch-ecs.gitbook.
 
 ## 🚀 Run the game
 
-From the repository root:
+Before running, make sure you have [Godot .NET](https://godotengine.org/download/) installed.
+
+- **From IDE**: open the solution in Visual Studio and run the `Stranne.EcsMemory.GodotGame` project.  
+- **From CLI**: from the repository root, run:
 
 ```bash
 godot --path Stranne.EcsMemory.GodotGame
 ```
 
-Requires [Godot .NET](https://godotengine.org/download/) to be installed. On some systems use `godot4` or `Godot.exe`.
+On some systems use `godot4` or `Godot.exe`.
