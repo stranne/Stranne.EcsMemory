@@ -39,9 +39,9 @@ internal sealed class MemoryGameCoreTest
         {
             await Assert.That(commandBuffer.TryDequeue(out var command)).IsTrue();
             await Assert.That(command).IsTypeOf<FlipCardAt>();
-            var startNewGameCommand = (FlipCardAt?)command;
-            await Assert.That(startNewGameCommand?.X).IsEqualTo(1);
-            await Assert.That(startNewGameCommand?.Y).IsEqualTo(2);
+            var flipCardAt = (FlipCardAt?)command;
+            await Assert.That(flipCardAt?.X).IsEqualTo(1);
+            await Assert.That(flipCardAt?.Y).IsEqualTo(2);
             await Assert.That(commandBuffer.TryDequeue(out _)).IsFalse();
         }
     }
