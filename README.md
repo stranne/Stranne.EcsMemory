@@ -12,8 +12,7 @@ This project is an **exploration** of using [Arch ECS](https://arch-ecs.gitbook.
   - Flip two cards at a time.
   - If they match, they stay visible.
   - If not, they flip back after a short delay.
-
-- The game ends when all cards are matched.
+  - The game ends when all cards are matched.
 
 - The UI is minimal:  
   - A grid of cards (buttons).  
@@ -22,10 +21,10 @@ This project is an **exploration** of using [Arch ECS](https://arch-ecs.gitbook.
 
 ## 🧩 Project structure
 
+- **Adapter**: Thin bridge between Core and Godot.  
 - **Contracts**: Shared DTOs (like RenderModel) used to pass data from Core to GodotGame.
 - **Core**: Arch ECS logic (deterministic, engine-agnostic).
-- **GodotAdapter**: Thin bridge between Core and Godot.  
-- **GodotGame**: Visuals and input using Godot.
+- **Game**: Visuals and input using Godot.
 
 ## 🚀 Run the game
 
