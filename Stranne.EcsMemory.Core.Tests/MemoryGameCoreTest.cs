@@ -1,4 +1,4 @@
-using Stranne.EcsMemory.Core.Commands;
+﻿using Stranne.EcsMemory.Core.Commands;
 using Stranne.EcsMemory.Core.Commands.Abstractions;
 using Stranne.EcsMemory.Core.Tests.Common;
 
@@ -8,7 +8,7 @@ internal sealed class MemoryGameCoreTest
     [Test]
     public async Task MemoryGameCore_StartNewGame_EnqueuesSingleCommandWithCorrectValues()
     {
-        var world = TestWorldFactory.Create();
+        using var world = TestWorldFactory.Create();
         var commandBuffer = new CommandBuffer();
         using var sut = new MemoryGameCore(world, null!, commandBuffer, null!);
 
@@ -29,7 +29,7 @@ internal sealed class MemoryGameCoreTest
     [Test]
     public async Task MemoryGameCore_FlipCardAt_EnqueuesSingleCommandWithCorrectValues()
     {
-        var world = TestWorldFactory.Create();
+        using var world = TestWorldFactory.Create();
         var commandBuffer = new CommandBuffer();
         using var sut = new MemoryGameCore(world, null!, commandBuffer, null!);
 

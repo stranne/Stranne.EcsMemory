@@ -7,7 +7,7 @@ internal sealed class RenderSystemTest
     [Test]
     public async Task RenderQuery_SortsDeterministically()
     {
-        var world = TestWorldFactory.Create();
+        using var world = TestWorldFactory.Create();
         var cards = new List<(int id, int x, int y)>
         {
             new(0, 1, 3),
@@ -19,7 +19,7 @@ internal sealed class RenderSystemTest
         };
         foreach (var (id, x, y) in cards)
             _ = world.CreateCard(cardId: id, x: x, y: y);
-        var sut = new RenderSystem(world);
+        using var sut = new RenderSystem(world);
 
         sut.Update(0);
 
@@ -32,8 +32,8 @@ internal sealed class RenderSystemTest
     [MatrixDataSource]
     public async Task RenderQuery_ProjectsFlags(bool isLocked, bool isWon, [MatrixMethod<RenderSystemTest>(nameof(Moves))] int moves)
     {
-        var world = TestWorldFactory.Create(isLocked: isLocked, isWon: isWon, moves: moves);
-        var sut = new RenderSystem(world);
+        using var world = TestWorldFactory.Create(isLocked: isLocked, isWon: isWon, moves: moves);
+        using var sut = new RenderSystem(world);
 
         sut.Update(0);
 
@@ -53,9 +53,9 @@ internal sealed class RenderSystemTest
     [Arguments(true, true, true)]
     public async Task RenderQuery_FacePolicy(bool isRevealed, bool isMatched, bool expectedIsFacedUp)
     {
-        var world = TestWorldFactory.Create();
+        using var world = TestWorldFactory.Create();
         _ = world.CreateCard(pairKey: 1, revealed: isRevealed, matched: isMatched);
-        var sut = new RenderSystem(world);
+        using var sut = new RenderSystem(world);
 
         sut.Update(0);
 
@@ -75,8 +75,8 @@ internal sealed class RenderSystemTest
         const int totalCards = 12;
         const int matchedCount = 4;
 
-        var world = TestWorldFactory.Create(columns, rows, totalCards: totalCards, matchedCount: matchedCount);
-        var sut = new RenderSystem(world);
+        using var world = TestWorldFactory.Create(columns, rows, totalCards: totalCards, matchedCount: matchedCount);
+        using var sut = new RenderSystem(world);
 
         sut.Update(0);
 

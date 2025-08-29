@@ -8,7 +8,7 @@ internal sealed class WorldSingletonExtensionsTest
     [Test]
     public async Task GetSingletonRef_ReturnsRef_AllowingInPlaceMutation()
     {
-        var world = TestWorldFactory.Create();
+        using var world = TestWorldFactory.Create();
         world.Create(new Foo(1));
 
         var actual = world.GetSingletonRef<Foo>();
@@ -19,7 +19,7 @@ internal sealed class WorldSingletonExtensionsTest
     [Test]
     public async Task GetSingletonRef_Throws_WhenComponentDoesNotExist()
     {
-        var world = TestWorldFactory.Create();
+        using var world = TestWorldFactory.Create();
 
         await Assert.That(() => world.GetSingletonRef<Foo>()).Throws<InvalidOperationException>();
     }
@@ -27,7 +27,7 @@ internal sealed class WorldSingletonExtensionsTest
     [Test]
     public async Task SetOrCreateSingleton_CreatesEntity_WhenComponentDoesNotExist()
     {
-        var world = TestWorldFactory.Create();
+        using var world = TestWorldFactory.Create();
 
         world.SetOrCreateSingleton(new Foo(1));
 
@@ -37,7 +37,7 @@ internal sealed class WorldSingletonExtensionsTest
     [Test]
     public async Task SetOrCreateSingleton_UpdatesExistingEntity_WhenComponentAlreadyExists()
     {
-        var world = TestWorldFactory.Create();
+        using var world = TestWorldFactory.Create();
         world.Create(new Foo(1));
 
         world.SetOrCreateSingleton(new Foo(2));

@@ -14,8 +14,8 @@ internal sealed class MatchedSystemTest
     [Test]
     public async Task MatchSystem_NoPendingEvaluation_DoesNothing()
     {
-        var world = TestWorldFactory.Create();
-        var sut = new MatchedSystem(world, Logger);
+        using var world = TestWorldFactory.Create();
+        using var sut = new MatchedSystem(world, Logger);
 
         var entityA = world.CreateCard(1, revealed: true);
         var entityB = world.CreateCard(2, revealed: true);
@@ -33,8 +33,8 @@ internal sealed class MatchedSystemTest
     [Test]
     public async Task MatchSystem_UpdatesDown_UntilZero_NoResolveBeforeZero()
     {
-        var world = TestWorldFactory.Create();
-        var sut = new MatchedSystem(world, Logger);
+        using var world = TestWorldFactory.Create();
+        using var sut = new MatchedSystem(world, Logger);
 
         var card1 = world.CreateCard(0, 0, true);
         var card2 = world.CreateCard(1, 1, true);
@@ -54,8 +54,8 @@ internal sealed class MatchedSystemTest
     [Test]
     public async Task MatchSystem_OnZeroTwoRevealedSamePair_SetsMatched_UnlocksAndIncrementsMoves()
     {
-        var world = TestWorldFactory.Create();
-        var sut = new MatchedSystem(world, Logger);
+        using var world = TestWorldFactory.Create();
+        using var sut = new MatchedSystem(world, Logger);
 
         var card1 = world.CreateCard(0, 0, true);
         var card2 = world.CreateCard(1, 0, true);
@@ -81,8 +81,8 @@ internal sealed class MatchedSystemTest
     [Test]
     public async Task MatchSystem_OnZeroTwoRevealedDifferentPair_FlipsBack_UnlocksAndIncrementsMoves()
     {
-        var world = TestWorldFactory.Create();
-        var sut = new MatchedSystem(world, Logger);
+        using var world = TestWorldFactory.Create();
+        using var sut = new MatchedSystem(world, Logger);
 
         var card1 = world.CreateCard(0, 0, true);
         var card2 = world.CreateCard(1, 1, true);
@@ -109,8 +109,8 @@ internal sealed class MatchedSystemTest
     [Test]
     public async Task MatchSystem_OnZeroLessThanTwoRevealed_UnlocksAndClearsPending()
     {
-        var world = TestWorldFactory.Create();
-        var sut = new MatchedSystem(world, Logger);
+        using var world = TestWorldFactory.Create();
+        using var sut = new MatchedSystem(world, Logger);
 
         var card = world.CreateCard(revealed: true);
         world.CreatePending();
@@ -133,8 +133,8 @@ internal sealed class MatchedSystemTest
     [Test]
     public async Task MatchSystem_PicksDeterministicPair_ByLowestCardId_WhenMoreThanTwoRevealed()
     {
-        var world = TestWorldFactory.Create();
-        var sut = new MatchedSystem(world, Logger);
+        using var world = TestWorldFactory.Create();
+        using var sut = new MatchedSystem(world, Logger);
 
         var card1 = world.CreateCard(2, 1, true);
         var card2 = world.CreateCard(1, 0, true);

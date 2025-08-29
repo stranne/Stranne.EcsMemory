@@ -19,7 +19,7 @@ internal sealed class FlipUtilTest
     [Test]
     public async Task TryFlip_GameLocked_DoesNotFlipCard()
     {
-        var world = TestWorldFactory.Create(isLocked: true);
+        using var world = TestWorldFactory.Create(isLocked: true);
 
         FlipUtil.TryFlip(world, GridPosition, Logger);
 
@@ -37,7 +37,7 @@ internal sealed class FlipUtilTest
     [Test]
     public async Task TryFlip_NoCardAtGridPosition_DoesNothing()
     {
-        var world = TestWorldFactory.Create();
+        using var world = TestWorldFactory.Create();
 
         FlipUtil.TryFlip(world, GridPosition, Logger);
 
@@ -47,7 +47,7 @@ internal sealed class FlipUtilTest
     [Test]
     public async Task TryFlip_AlreadyMatched_DoesNotFlipCard()
     {
-        var world = TestWorldFactory.Create();
+        using var world = TestWorldFactory.Create();
         world.CreateCard(matched: true);
 
         FlipUtil.TryFlip(world, GridPosition, Logger);
@@ -58,7 +58,7 @@ internal sealed class FlipUtilTest
     [Test]
     public async Task TryFlip_AlreadyRevealed_DoesNotFlipCard()
     {
-        var world = TestWorldFactory.Create();
+        using var world = TestWorldFactory.Create();
         world.CreateCard(revealed: true);
 
         FlipUtil.TryFlip(world, GridPosition, Logger);
@@ -76,7 +76,7 @@ internal sealed class FlipUtilTest
     [Test]
     public async Task TryFlip_FirstCard_FlipsAndSetsGameState()
     {
-        var world = TestWorldFactory.Create();
+        using var world = TestWorldFactory.Create();
         world.CreateCard();
 
         FlipUtil.TryFlip(world, GridPosition, Logger);
@@ -95,7 +95,7 @@ internal sealed class FlipUtilTest
     [Test]
     public async Task TryFlip_SecondCard_SetsUpPendingEvaluationAndLocksGame()
     {
-        var world = TestWorldFactory.Create();
+        using var world = TestWorldFactory.Create();
         world.CreateCard();
 
         var alreadyFlippedCard = world.Create(
