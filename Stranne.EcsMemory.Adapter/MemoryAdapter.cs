@@ -7,15 +7,14 @@ using Stranne.EcsMemory.Core;
 namespace Stranne.EcsMemory.Adapter;
 public sealed class MemoryAdapter : IDisposable
 {
-    public event Action<WonEvent>? Won;
-
     private readonly MemoryGameCore _memoryGameCore;
+
     private int _lastVersion;
 
-    public MemoryAdapter(ILoggerFactory? loggerFactory = null)
+    public MemoryAdapter(IGameEvents gameEvents, ILoggerFactory? loggerFactory = null)
     {
         loggerFactory ??= NullLoggerFactory.Instance;
-        _memoryGameCore = MemoryGameCore.Create(loggerFactory);
+        _memoryGameCore = MemoryGameCore.Create(gameEvents, loggerFactory);
     }
 
     public RenderModel RenderModel => _memoryGameCore.RenderModel;
@@ -26,30 +25,14 @@ public sealed class MemoryAdapter : IDisposable
     public void FlipCardAt(int x, int y) =>
         _memoryGameCore.FlipCardAt(x, y);
 
-    public void Update(float deltaTime)
-    {
+    public void Update(float deltaTime) => 
         _memoryGameCore.Update(deltaTime);
-        ProcessEvents();
-    }
 
     public bool HasRenderModelChanged()
     {
         var hasRenderModelChanged = _memoryGameCore.RenderModel.Version != _lastVersion;
         _lastVersion = _memoryGameCore.RenderModel.Version;
         return hasRenderModelChanged;
-    }
-
-    private void ProcessEvents()
-    {
-        foreach (var @event in _memoryGameCore.PopEvents())
-        {
-            switch (@event)
-            {
-                case WonEvent wonEvent:
-                    Won?.Invoke(wonEvent);
-                    break;
-            }
-        }
     }
 
     public void Dispose() => 

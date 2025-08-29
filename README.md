@@ -21,20 +21,21 @@ This project is an **exploration** of using [Arch ECS](https://arch-ecs.gitbook.
 
 ## 🧩 Project structure
 
-- **Adapter**: Thin bridge between Core and Godot.  
-- **Contracts**: Shared DTOs (like RenderModel) used to pass data from Core to GodotGame.
-- **Core**: Arch ECS logic (deterministic, engine-agnostic).
-- **Game**: Visuals and input using Godot.
+- **Adapter**: Thin bridge between Core and Game (Godot).  
+- **Contracts**: Shared DTOs and event interfaces for cross-assembly communication.
+- **Core**: Arch ECS logic (deterministic, engine-agnostic) with EventBus for event handling.
+- **Core.Tests**: Unit tests for Core game logic.
+- **Game**: Visuals and input using Godot game engine.
 
 ## 🚀 Run the game
 
 Before running, make sure you have [Godot .NET](https://godotengine.org/download/) installed.
 
-- **From IDE**: open the solution in Visual Studio and run the `Stranne.EcsMemory.GodotGame` project.  
+- **From IDE**: open the solution in Visual Studio and run the `Stranne.EcsMemory.Game` project.  
 - **From CLI**: from the repository root, run:
 
 ```bash
-godot --path Stranne.EcsMemory.GodotGame
+godot --path Stranne.EcsMemory.Game
 ```
 
 On some systems use `godot4` or `Godot.exe`.

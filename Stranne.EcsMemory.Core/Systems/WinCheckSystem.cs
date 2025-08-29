@@ -1,8 +1,9 @@
-﻿using Arch.Core;
+﻿using Arch.Bus;
+using Arch.Core;
 using Arch.System;
 using Microsoft.Extensions.Logging;
-using Stranne.EcsMemory.Core.Components.Events;
 using Stranne.EcsMemory.Core.Components.Singleton;
+using Stranne.EcsMemory.Core.Events;
 using Stranne.EcsMemory.Core.Extensions;
 
 namespace Stranne.EcsMemory.Core.Systems;
@@ -21,9 +22,8 @@ internal sealed class WinCheckSystem(World world, ILogger<WinCheckSystem> logger
         gameState.IsWon = true;
         gameState.StateVersion++;
 
-        World.Create(
-            new EventMetadata(gameState.StateVersion),
-            new EventWon(gameState.Moves, gameState.TotalCards));
+        var gameWon = new GameWon(gameState.Moves, gameState.TotalCards, gameState.StateVersion);
+        EventBus.Send(ref gameWon);
         logger.LogDebug("Game won in {Moves} moves!", gameState.Moves);
     }
 }

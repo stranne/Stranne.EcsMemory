@@ -1,71 +1,77 @@
 ﻿using Arch.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Stranne.EcsMemory.Core.Components.Events;
+using NSubstitute;
 using Stranne.EcsMemory.Core.Components.Singleton;
 using Stranne.EcsMemory.Core.Extensions;
 using Stranne.EcsMemory.Core.Systems;
 using Stranne.EcsMemory.Core.Tests.Common;
 
 namespace Stranne.EcsMemory.Core.Tests.Systems;
+[NotInParallel]
 internal sealed class WinCheckSystemTest
 {
-    private static readonly QueryDescription WonEventQuery = new QueryDescription().WithAll<EventWon, EventMetadata>();
     private static readonly ILogger<WinCheckSystem> Logger = new NullLogger<WinCheckSystem>();
 
     [Test]
-    public async Task WinCheck_SetsIsWon_WhenAllMatched()
+    public async Task WinCheck_SetsIsWonAndTriggersGameWonEvent_WhenAllCardsMatched()
     {
-        var world = TestWorldFactory.Create(totalCards: 10, matchedCount: 10);
-        var sut = new WinCheckSystem(world, Logger);
+        using var eventManager = new EventTestHelper();
+        using var world = TestWorldFactory.Create(totalCards: 10, matchedCount: 10, moves: 14);
+        using var sut = new WinCheckSystem(world, Logger);
 
         sut.Update(0);
 
-        await AssertState(world, true, true, true);
+        await AssertState(world, true, true);
+        eventManager.ProcessAndGetEvents().Received(1).OnGameWon(14, 10);
     }
 
     [Test]
     public async Task WinCheck_Skip_WhenAlreadyWon()
     {
-        var world = TestWorldFactory.Create(totalCards: 10, matchedCount: 10, isWon: true);
-        var sut = new WinCheckSystem(world, Logger);
+        using var eventManager = new EventTestHelper();
+        using var world = TestWorldFactory.Create(totalCards: 10, matchedCount: 10, isWon: true);
+        using var sut = new WinCheckSystem(world, Logger);
 
         sut.Update(0);
 
         await AssertState(world, true);
+        eventManager.ProcessAndGetEvents().DidNotReceive().OnGameWon(Arg.Any<int>(), Arg.Any<int>());
     }
 
     [Test]
     public async Task WinCheck_Skip_WhenTotalCardsAreZero()
     {
-        var world = TestWorldFactory.Create(totalCards: 0, matchedCount: 0);
-        var sut = new WinCheckSystem(world, Logger);
+        using var eventManager = new EventTestHelper();
+        using var world = TestWorldFactory.Create(totalCards: 0, matchedCount: 0);
+        using var sut = new WinCheckSystem(world, Logger);
 
         sut.Update(0);
 
         await AssertState(world);
+        eventManager.ProcessAndGetEvents().DidNotReceive().OnGameWon(Arg.Any<int>(), Arg.Any<int>());
     }
 
     [Test]
     public async Task WinCheck_Skip_WhenNotAllCardsAreMatched()
     {
-        var world = TestWorldFactory.Create(totalCards: 10, matchedCount: 8);
-        var sut = new WinCheckSystem(world, Logger);
+        using var eventManager = new EventTestHelper();
+        using var world = TestWorldFactory.Create(totalCards: 10, matchedCount: 8);
+        using var sut = new WinCheckSystem(world, Logger);
+
         sut.Update(0);
         
         await AssertState(world);
+        eventManager.ProcessAndGetEvents().DidNotReceive().OnGameWon(Arg.Any<int>(), Arg.Any<int>());
     }
 
-    private static async Task AssertState(World world, bool isWon = false, bool isLocked = false, bool expectWonEvent = false)
+    private static async Task AssertState(World world, bool isWon = false, bool isLocked = false)
     {
         using (Assert.Multiple())
         {
             var gameState = world.GetSingletonRef<GameState>();
             await Assert.That(gameState.IsWon).IsEqualTo(isWon);
             await Assert.That(gameState.IsLocked).IsEqualTo(isLocked);
-
-            var eventWonCount = world.CountEntities(in WonEventQuery);
-            await Assert.That(eventWonCount).IsEqualTo(expectWonEvent ? 1 : 0);
         }
     }
 }

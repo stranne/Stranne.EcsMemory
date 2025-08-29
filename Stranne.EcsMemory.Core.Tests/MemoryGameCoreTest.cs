@@ -1,4 +1,4 @@
-﻿using Stranne.EcsMemory.Core.Commands;
+using Stranne.EcsMemory.Core.Commands;
 using Stranne.EcsMemory.Core.Commands.Abstractions;
 using Stranne.EcsMemory.Core.Tests.Common;
 
@@ -10,7 +10,7 @@ internal sealed class MemoryGameCoreTest
     {
         var world = TestWorldFactory.Create();
         var commandBuffer = new CommandBuffer();
-        var sut = new MemoryGameCore(world, null!, commandBuffer);
+        using var sut = new MemoryGameCore(world, null!, commandBuffer, null!);
 
         sut.StartNewGame(1, 2, 3);
 
@@ -31,7 +31,7 @@ internal sealed class MemoryGameCoreTest
     {
         var world = TestWorldFactory.Create();
         var commandBuffer = new CommandBuffer();
-        var sut = new MemoryGameCore(world, null!, commandBuffer);
+        using var sut = new MemoryGameCore(world, null!, commandBuffer, null!);
 
         sut.FlipCardAt(1, 2);
 

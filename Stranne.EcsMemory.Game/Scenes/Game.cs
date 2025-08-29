@@ -8,123 +8,124 @@ using Stranne.EcsMemory.Contracts.Event;
 using Stranne.EcsMemory.Game.Utils;
 
 namespace Stranne.EcsMemory.Game.Scenes;
-public partial class Game : Control
+public sealed partial class Game : Control, IGameEvents
 {
-	private readonly MemoryAdapter _memoryAdapter = new(GodotLoggerFactory.Instance);
-	private readonly Dictionary<int, Button> _cardButtons = [];
-	private readonly ILogger<Game> _logger = GodotLoggerFactory.Instance.CreateLogger<Game>();
+    private readonly MemoryAdapter _memoryAdapter;
+    private readonly Dictionary<int, Button> _cardButtons = [];
+    private readonly ILogger<Game> _logger = GodotLoggerFactory.Instance.CreateLogger<Game>();
 
-	[Export] private int _columns = 5;
-	[Export] private int _rows = 4;
-	[Export] private int _seed = 0;
-	[Export] private int _minCardSize = 96;
+    [Export] private int _columns = 5;
+    [Export] private int _rows = 4;
+    [Export] private int _seed = 0;
+    [Export] private int _minCardSize = 96;
 
-	private GridContainer _grid = null!;
-	private Label _movesLabel = null!;
-	private Button _newGameButton = null!;
+    private GridContainer _grid = null!;
+    private Label _movesLabel = null!;
+    private Button _newGameButton = null!;
 
-	public override void _Ready()
-	{
-		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_columns);
-		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_rows);
+    public Game() => 
+        _memoryAdapter = new(this, GodotLoggerFactory.Instance);
 
-		_grid = GetNode<GridContainer>("%CardGrid");
-		_movesLabel = GetNode<Label>("%MovesLabel");
-		_newGameButton = GetNode<Button>("%NewGameButton");
+    public override void _Ready()
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_columns);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_rows);
 
-		_newGameButton.Pressed += StartNewGame;
-		_memoryAdapter.Won += ShowWinMessage;
+        _grid = GetNode<GridContainer>("%CardGrid");
+        _movesLabel = GetNode<Label>("%MovesLabel");
+        _newGameButton = GetNode<Button>("%NewGameButton");
 
-		StartNewGame();
-	}
+        _newGameButton.Pressed += StartNewGame;
 
-	public override void _PhysicsProcess(double delta) =>
-		Update((float)delta);
+        StartNewGame();
+    }
 
-	private void StartNewGame()
-	{
-		var seed = _seed == 0
-			? Random.Shared.Next()
-			: _seed;
-		_logger.LogDebug("{StartNewGameName} seed: {Seed}.", nameof(StartNewGame), seed);
+    public override void _PhysicsProcess(double delta) =>
+        Update((float)delta);
 
-		_memoryAdapter.StartNewGame(_columns, _rows, seed);
+    private void StartNewGame()
+    {
+        var seed = _seed == 0
+            ? Random.Shared.Next()
+            : _seed;
+        _logger.LogDebug("{StartNewGameName} seed: {Seed}.", nameof(StartNewGame), seed);
 
-		_memoryAdapter.Update(0);
-		BuildGrid(_memoryAdapter.RenderModel);
-	}
+        _memoryAdapter.StartNewGame(_columns, _rows, seed);
 
-	private void Update(float delta = 0)
-	{
-		_memoryAdapter.Update(delta);
+        _memoryAdapter.Update(0);
+        BuildGrid(_memoryAdapter.RenderModel);
+    }
 
-		if (_memoryAdapter.HasRenderModelChanged())
-			UpdateView(_memoryAdapter.RenderModel);
-	}
+    private void Update(float delta = 0)
+    {
+        _memoryAdapter.Update(delta);
 
-	private void BuildGrid(RenderModel model)
-	{
-		_grid.Columns = model.Board.Columns;
+        if (_memoryAdapter.HasRenderModelChanged())
+            UpdateView(_memoryAdapter.RenderModel);
+    }
 
-		foreach (var child in _grid.GetChildren())
-			child?.QueueFree();
+    private void BuildGrid(RenderModel model)
+    {
+        _grid.Columns = model.Board.Columns;
 
-		_cardButtons.Clear();
+        foreach (var child in _grid.GetChildren())
+            child?.QueueFree();
 
-		foreach (var card in model.Cards)
-		{
-			var button = new Button
-			{
-				Text = "",
-				ToggleMode = false,
-				FocusMode = FocusModeEnum.None,
-				CustomMinimumSize = new Vector2(_minCardSize, _minCardSize),
-				ClipText = true
-			};
+        _cardButtons.Clear();
 
-			int x = card.X, y = card.Y;
-			button.Pressed += () => OnCardPress(x, y);
+        foreach (var card in model.Cards)
+        {
+            var button = new Button
+            {
+                Text = "",
+                ToggleMode = false,
+                FocusMode = FocusModeEnum.None,
+                CustomMinimumSize = new Vector2(_minCardSize, _minCardSize),
+                ClipText = true
+            };
 
-			_grid.AddChild(button);
-			_cardButtons.Add(card.Id, button);
-		}
-	}
+            int x = card.X, y = card.Y;
+            button.Pressed += () => OnCardPress(x, y);
 
-	private void UpdateView(RenderModel model)
-	{
-		_movesLabel.Text = $"Moves: {model.Moves}";
+            _grid.AddChild(button);
+            _cardButtons.Add(card.Id, button);
+        }
+    }
 
-		foreach (var card in model.Cards)
-		{
-			if (!_cardButtons.TryGetValue(card.Id, out var button))
-				continue;
+    private void UpdateView(RenderModel model)
+    {
+        _movesLabel.Text = $"Moves: {model.Moves}";
 
-			button.Text = card.IsFacedUp
-				? card.PairKey is { } pairKey ? (pairKey + 1).ToString() : "?"
-				: "";
+        foreach (var card in model.Cards)
+        {
+            if (!_cardButtons.TryGetValue(card.Id, out var button))
+                continue;
 
-			button.Disabled = model.IsLocked || card.IsMatched;
-			button.Modulate = card.IsMatched
-				? new Color(1, 1, 1, 0.8f)
-				: Colors.White;
-		}
-	}
+            button.Text = card.IsFacedUp
+                ? card.PairKey is { } pairKey ? (pairKey + 1).ToString() : "?"
+                : "";
 
-	private void OnCardPress(int x, int y)
-	{
-		_logger.LogDebug("{OnCardPressName} ({X}, {Y}).", nameof(OnCardPress), x, y);
-		_memoryAdapter.FlipCardAt(x, y);
-		Update();
-	}
+            button.Disabled = model.IsLocked || card.IsMatched;
+            button.Modulate = card.IsMatched
+                ? new Color(1, 1, 1, 0.8f)
+                : Colors.White;
+        }
+    }
 
-	private void ShowWinMessage(WonEvent wonEvent) =>
-		_logger.LogInformation("You won after {WonEventMoves} moves! 🎉", wonEvent.Moves);
+    private void OnCardPress(int x, int y)
+    {
+        _logger.LogDebug("{OnCardPressName} ({X}, {Y}).", nameof(OnCardPress), x, y);
+        _memoryAdapter.FlipCardAt(x, y);
+        Update();
+    }
 
-	public override void _ExitTree()
-	{
-		_newGameButton.Pressed -= StartNewGame;
-		_memoryAdapter.Won -= ShowWinMessage;
+    public void OnGameWon(int moves, int totalCards) =>
+        _logger.LogInformation("You won after {WonEventMoves} moves! 🎉", moves);
 
-		_memoryAdapter.Dispose();
-	}
+    public override void _ExitTree()
+    {
+        _newGameButton.Pressed -= StartNewGame;
+
+        _memoryAdapter.Dispose();
+    }
 }
