@@ -1,6 +1,6 @@
 ﻿using Arch.Core;
 using Arch.System;
-using Stranne.EcsMemory.Contracts;
+using Stranne.EcsMemory.Contracts.Snapshots;
 using Stranne.EcsMemory.Core.Components.Singleton;
 using Stranne.EcsMemory.Core.Components.Tags;
 using Stranne.EcsMemory.Core.Components.Value;
@@ -14,20 +14,20 @@ internal sealed class RenderSystem(World world)
 
     private static readonly QueryDescription CardsQuery = new QueryDescription().WithAll<CardId, GridPosition>();
 
-    public RenderModel RenderModel { get; private set; } = new()
+    public GameSnapshot GameSnapshot { get; private set; } = new()
     {
         Cards = [],
+        Rows = 0,
+        Columns = 0,
+        TotalCards = 0,
+
+        Moves = 0,
+        MatchedCards = 0,
+
         IsLocked = false,
         IsWon = false,
-        Moves = 0,
-        Version = -1,
-        Board = new()
-        {
-            Rows = 0,
-            Columns = 0,
-            TotalCards = 0,
-            MatchedCards = 0
-        }
+
+        Version = -1
     };
 
     public override void Update(in float _)
@@ -37,7 +37,7 @@ internal sealed class RenderSystem(World world)
             return;
 
 
-        var cards = new List<RenderCard>(gameState.TotalCards);
+        var cards = new List<CardSnapshot>(gameState.TotalCards);
 
         World.Query(in CardsQuery, (Entity entity, ref CardId cardId, ref GridPosition gridPosition) =>
         {
@@ -48,7 +48,7 @@ internal sealed class RenderSystem(World world)
                 ? World.Get<PairKey>(entity).Value
                 : (int?)null;
 
-            cards.Add(new RenderCard
+            cards.Add(new CardSnapshot
             {
                 Id = cardId.Value,
                 X = gridPosition.X,
@@ -61,20 +61,20 @@ internal sealed class RenderSystem(World world)
         cards.Sort((a, b) => a.Y != b.Y ? a.Y.CompareTo(b.Y) : a.X.CompareTo(b.X));
 
         var config = World.GetSingletonRef<Config>();
-        RenderModel = new RenderModel
+        GameSnapshot = new GameSnapshot
         {
             Cards = cards,
+            Rows = config.Rows,
+            Columns = config.Cols,
+            TotalCards = gameState.TotalCards,
+
+            Moves = gameState.Moves,
+            MatchedCards = gameState.MatchedCount,
+
             IsLocked = gameState.IsLocked,
             IsWon = gameState.IsWon,
-            Moves = gameState.Moves,
-            Version = gameState.StateVersion,
-            Board = new()
-            {
-                Rows = config.Rows,
-                Columns = config.Cols,
-                TotalCards = gameState.TotalCards,
-                MatchedCards = gameState.MatchedCount
-            }
+
+            Version = gameState.StateVersion
         };
 
         _lastStateVersion = gameState.StateVersion;

@@ -1,5 +1,5 @@
-﻿namespace Stranne.EcsMemory.Contracts;
-public sealed record RenderCard
+﻿namespace Stranne.EcsMemory.Contracts.Snapshots;
+public sealed record CardSnapshot
 {
     public required int Id { get; init; }
     public required int X { get; init; }
@@ -10,4 +10,5 @@ public sealed record RenderCard
     /// Not <see langword="null"/> when <see cref="IsFacedUp"/> is <see langword="true"/>.
     /// </summary>
     public int? PairKey { get; init; }
+    // TODO add dirty state/version number
 }

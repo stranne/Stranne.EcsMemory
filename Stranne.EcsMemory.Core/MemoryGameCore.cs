@@ -1,7 +1,7 @@
 ﻿using Arch.Core;
 using Microsoft.Extensions.Logging;
-using Stranne.EcsMemory.Contracts;
 using Stranne.EcsMemory.Contracts.Event;
+using Stranne.EcsMemory.Contracts.Snapshots;
 using Stranne.EcsMemory.Core.Commands;
 using Stranne.EcsMemory.Core.Commands.Abstractions;
 using Stranne.EcsMemory.Core.Events;
@@ -45,8 +45,8 @@ public sealed class MemoryGameCore : IDisposable
         _eventManager.Dequeue();
     }
 
-    public RenderModel RenderModel =>
-        _systemManager.RenderModel;
+    public GameSnapshot GameSnapshot =>
+        _systemManager.GameSnapshot;
 
     public void Dispose()
     {

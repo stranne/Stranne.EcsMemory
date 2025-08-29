@@ -1,7 +1,7 @@
 ﻿using Arch.Core;
 using Arch.System;
 using Microsoft.Extensions.Logging;
-using Stranne.EcsMemory.Contracts;
+using Stranne.EcsMemory.Contracts.Snapshots;
 using Stranne.EcsMemory.Core.Commands.Abstractions;
 
 namespace Stranne.EcsMemory.Core.Systems;
@@ -30,7 +30,7 @@ internal sealed class SystemManager : IDisposable
         _systems.Initialize();
     }
 
-    public RenderModel RenderModel => _renderSystem.RenderModel;
+    public GameSnapshot GameSnapshot => _renderSystem.GameSnapshot;
 
     public void Update(float deltaTime)
     {

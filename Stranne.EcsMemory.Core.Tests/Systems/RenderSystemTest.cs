@@ -23,7 +23,7 @@ internal sealed class RenderSystemTest
 
         sut.Update(0);
 
-        var renderedCards = sut.RenderModel.Cards;
+        var renderedCards = sut.GameSnapshot.Cards;
         var expectedOrder = new[] { 1, 4, 3, 5, 2, 0 };
         await Assert.That(renderedCards.Select(c => c.Id).SequenceEqual(expectedOrder)).IsTrue();
     }
@@ -37,7 +37,7 @@ internal sealed class RenderSystemTest
 
         sut.Update(0);
 
-        var renderModel = sut.RenderModel;
+        var renderModel = sut.GameSnapshot;
         using (Assert.Multiple())
         {
             await Assert.That(renderModel.IsLocked).IsEqualTo(isLocked);
@@ -59,7 +59,7 @@ internal sealed class RenderSystemTest
 
         sut.Update(0);
 
-        var renderedCard = sut.RenderModel.Cards.Single();
+        var renderedCard = sut.GameSnapshot.Cards.Single();
         await Assert.That(renderedCard.IsFacedUp).IsEqualTo(expectedIsFacedUp);
         if (expectedIsFacedUp)
             await Assert.That(renderedCard.PairKey).IsEqualTo(1);
@@ -80,13 +80,13 @@ internal sealed class RenderSystemTest
 
         sut.Update(0);
 
-        var boardInfo = sut.RenderModel.Board;
+        var gameSnapshot = sut.GameSnapshot;
         using (Assert.Multiple())
         {
-            await Assert.That(boardInfo.Columns).IsEqualTo(columns);
-            await Assert.That(boardInfo.Rows).IsEqualTo(rows);
-            await Assert.That(boardInfo.TotalCards).IsEqualTo(totalCards);
-            await Assert.That(boardInfo.MatchedCards).IsEqualTo(matchedCount);
+            await Assert.That(gameSnapshot.Columns).IsEqualTo(columns);
+            await Assert.That(gameSnapshot.Rows).IsEqualTo(rows);
+            await Assert.That(gameSnapshot.TotalCards).IsEqualTo(totalCards);
+            await Assert.That(gameSnapshot.MatchedCards).IsEqualTo(matchedCount);
         }
     }
 

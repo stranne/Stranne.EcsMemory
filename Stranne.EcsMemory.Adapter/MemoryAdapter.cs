@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Stranne.EcsMemory.Contracts;
 using Stranne.EcsMemory.Contracts.Event;
+using Stranne.EcsMemory.Contracts.Snapshots;
 using Stranne.EcsMemory.Core;
 
 namespace Stranne.EcsMemory.Adapter;
@@ -17,7 +17,7 @@ public sealed class MemoryAdapter : IDisposable
         _memoryGameCore = MemoryGameCore.Create(gameEvents, loggerFactory);
     }
 
-    public RenderModel RenderModel => _memoryGameCore.RenderModel;
+    public GameSnapshot GameSnapshot => _memoryGameCore.GameSnapshot;
 
     public void StartNewGame(int columns, int rows, int seed) =>
         _memoryGameCore.StartNewGame(columns, rows, seed);
@@ -30,8 +30,8 @@ public sealed class MemoryAdapter : IDisposable
 
     public bool HasRenderModelChanged()
     {
-        var hasRenderModelChanged = _memoryGameCore.RenderModel.Version != _lastVersion;
-        _lastVersion = _memoryGameCore.RenderModel.Version;
+        var hasRenderModelChanged = _memoryGameCore.GameSnapshot.Version != _lastVersion;
+        _lastVersion = _memoryGameCore.GameSnapshot.Version;
         return hasRenderModelChanged;
     }
 

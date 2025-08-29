@@ -3,8 +3,8 @@ using Godot;
 using Godot.Collections;
 using Microsoft.Extensions.Logging;
 using Stranne.EcsMemory.Adapter;
-using Stranne.EcsMemory.Contracts;
 using Stranne.EcsMemory.Contracts.Event;
+using Stranne.EcsMemory.Contracts.Snapshots;
 using Stranne.EcsMemory.Game.Utils;
 
 namespace Stranne.EcsMemory.Game.Scenes;
@@ -53,7 +53,7 @@ public sealed partial class Game : Control, IGameEvents
         _memoryAdapter.StartNewGame(_columns, _rows, seed);
 
         _memoryAdapter.Update(0);
-        BuildGrid(_memoryAdapter.RenderModel);
+        BuildGrid(_memoryAdapter.GameSnapshot);
     }
 
     private void Update(float delta = 0)
@@ -61,12 +61,12 @@ public sealed partial class Game : Control, IGameEvents
         _memoryAdapter.Update(delta);
 
         if (_memoryAdapter.HasRenderModelChanged())
-            UpdateView(_memoryAdapter.RenderModel);
+            UpdateView(_memoryAdapter.GameSnapshot);
     }
 
-    private void BuildGrid(RenderModel model)
+    private void BuildGrid(GameSnapshot model)
     {
-        _grid.Columns = model.Board.Columns;
+        _grid.Columns = model.Columns;
 
         foreach (var child in _grid.GetChildren())
             child?.QueueFree();
@@ -92,7 +92,7 @@ public sealed partial class Game : Control, IGameEvents
         }
     }
 
-    private void UpdateView(RenderModel model)
+    private void UpdateView(GameSnapshot model)
     {
         _movesLabel.Text = $"Moves: {model.Moves}";
 

@@ -23,7 +23,7 @@ internal sealed class WinCheckSystem(World world, ILogger<WinCheckSystem> logger
         gameState.StateVersion++;
 
         var gameWon = new GameWon(gameState.Moves, gameState.TotalCards, gameState.StateVersion);
-        EventBus.Send(ref gameWon);
+        EventBus.Send(in gameWon);
         logger.LogDebug("Game won in {Moves} moves!", gameState.Moves);
     }
 }
