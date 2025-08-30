@@ -5,7 +5,7 @@ using Stranne.EcsMemory.Core.Extensions;
 namespace Stranne.EcsMemory.Core.Tests.Common;
 internal static class TestWorldFactory
 {
-    public static World Create(int cols = 4, int rows = 3, int evalDelayUpdates = 10, int seed = 123, bool isLocked = false, bool isWon = false, int totalCards = 0, int matchedCount = 0, int moves = 0)
+    public static World Create(int columns = 4, int rows = 3, int evalDelayUpdates = 10, int seed = 123, bool isLocked = false, bool isWon = false, int totalCards = 0, int matchedCount = 0, int moves = 0, uint stateVersion = 1)
     {
         var world = World.Create();
         world.SetOrCreateSingleton(new GameState
@@ -15,9 +15,10 @@ internal static class TestWorldFactory
             Moves = moves,
             IsWon = isWon,
             TotalCards = totalCards,
-            MatchedCount = matchedCount
+            MatchedCount = matchedCount,
+            StateVersion = stateVersion
         });
-        world.SetOrCreateSingleton(new Config(cols, rows, evalDelayUpdates, seed));
+        world.SetOrCreateSingleton(new Config(columns, rows, evalDelayUpdates, seed));
         return world;
     }
 }

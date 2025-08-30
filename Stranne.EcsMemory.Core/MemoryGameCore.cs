@@ -11,11 +11,11 @@ namespace Stranne.EcsMemory.Core;
 public sealed class MemoryGameCore : IDisposable
 {
     private readonly World _world;
-    private readonly SystemManager _systemManager;
+    private readonly ISystemManager _systemManager;
     private readonly ICommandBuffer _commandBuffer;
-    private readonly EventManager _eventManager;
+    private readonly IEventManager _eventManager;
 
-    internal MemoryGameCore(World world, SystemManager systemManager, ICommandBuffer commandBuffer, EventManager eventManager)
+    internal MemoryGameCore(World world, ISystemManager systemManager, ICommandBuffer commandBuffer, IEventManager eventManager)
     {
         _world = world;
         _systemManager = systemManager;
@@ -52,5 +52,6 @@ public sealed class MemoryGameCore : IDisposable
     {
         _world.Dispose();
         _systemManager.Dispose();
+        _eventManager.Dispose();
     }
 }

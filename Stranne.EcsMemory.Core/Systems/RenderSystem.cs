@@ -10,9 +10,9 @@ namespace Stranne.EcsMemory.Core.Systems;
 internal sealed class RenderSystem(World world)
     : BaseSystem<World, float>(world)
 {
-    private int _lastStateVersion = -1;
+    private uint _lastStateVersion;
 
-    private static readonly QueryDescription CardsQuery = new QueryDescription().WithAll<CardId, GridPosition>();
+    private static readonly QueryDescription CardsQuery = new QueryDescription().WithAll<CardId, GridPosition, LastChangedStateVersion>();
 
     public GameSnapshot GameSnapshot { get; private set; } = new()
     {
@@ -27,7 +27,7 @@ internal sealed class RenderSystem(World world)
         IsLocked = false,
         IsWon = false,
 
-        Version = -1
+        CurrentStateVersion = 0
     };
 
     public override void Update(in float _)
@@ -36,10 +36,9 @@ internal sealed class RenderSystem(World world)
         if (_lastStateVersion == gameState.StateVersion)
             return;
 
-
         var cards = new List<CardSnapshot>(gameState.TotalCards);
 
-        World.Query(in CardsQuery, (Entity entity, ref CardId cardId, ref GridPosition gridPosition) =>
+        World.Query(in CardsQuery, (Entity entity, ref CardId cardId, ref GridPosition gridPosition, ref LastChangedStateVersion lastChangedStateVersion) =>
         {
             var isRevealed = World.Has<Revealed>(entity);
             var isMatched = World.Has<Matched>(entity);
@@ -55,7 +54,8 @@ internal sealed class RenderSystem(World world)
                 Y = gridPosition.Y,
                 IsFacedUp = isFacedUp,
                 IsMatched = isMatched,
-                PairKey = pairKey
+                PairKey = pairKey,
+                StateVersion = lastChangedStateVersion.StateVersion
             });
         });
         cards.Sort((a, b) => a.Y != b.Y ? a.Y.CompareTo(b.Y) : a.X.CompareTo(b.X));
@@ -65,7 +65,7 @@ internal sealed class RenderSystem(World world)
         {
             Cards = cards,
             Rows = config.Rows,
-            Columns = config.Cols,
+            Columns = config.Columns,
             TotalCards = gameState.TotalCards,
 
             Moves = gameState.Moves,
@@ -74,7 +74,7 @@ internal sealed class RenderSystem(World world)
             IsLocked = gameState.IsLocked,
             IsWon = gameState.IsWon,
 
-            Version = gameState.StateVersion
+            CurrentStateVersion = gameState.StateVersion
         };
 
         _lastStateVersion = gameState.StateVersion;

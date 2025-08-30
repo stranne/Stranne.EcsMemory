@@ -9,5 +9,5 @@ internal struct GameState
     public bool IsWon;
     public int TotalCards;
     public int MatchedCount;
-    public int StateVersion;
+    public uint StateVersion;
 }

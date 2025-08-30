@@ -24,7 +24,7 @@ internal sealed class BoardSetupUtilTest
     {
         using var world = TestWorldFactory.Create();
         var config = world.GetSingletonRef<Config>();
-        var expectedCardCount = config.Cols * config.Rows;
+        var expectedCardCount = config.Columns * config.Rows;
 
         BoardSetupUtil.BuildBoard(world, config);
 
@@ -53,14 +53,14 @@ internal sealed class BoardSetupUtilTest
 
         world.Query(in gridPositionQuery, (Entity _, ref GridPosition gridPosition) =>
         {
-            withinBounds &= gridPosition.X >= 0 && gridPosition.X < config.Cols && gridPosition.Y >= 0 && gridPosition.Y < config.Rows;
+            withinBounds &= gridPosition.X >= 0 && gridPosition.X < config.Columns && gridPosition.Y >= 0 && gridPosition.Y < config.Rows;
             seen.Add((gridPosition.X, gridPosition.Y));
         });
 
         using (Assert.Multiple())
         {
             await Assert.That(withinBounds).IsTrue();
-            await Assert.That(seen.Count).IsEqualTo(config.Cols * config.Rows);
+            await Assert.That(seen.Count).IsEqualTo(config.Columns * config.Rows);
         }
     }
 
@@ -84,7 +84,7 @@ internal sealed class BoardSetupUtilTest
         using (Assert.Multiple())
         {
             await Assert.That(counts.Values).All().Satisfy(x => x.IsEqualTo(2));
-            await Assert.That(counts.Count).IsEqualTo(config.Cols * config.Rows / 2);
+            await Assert.That(counts.Count).IsEqualTo(config.Columns * config.Rows / 2);
         }
     }
 
@@ -161,7 +161,7 @@ internal sealed class BoardSetupUtilTest
 
         var cardQuery = new QueryDescription().WithAll<CardId>();
         var cardCount = world.CountEntities(in cardQuery);
-        await Assert.That(cardCount).IsEqualTo(config.Cols * config.Rows);
+        await Assert.That(cardCount).IsEqualTo(config.Columns * config.Rows);
     }
 
     [Test]

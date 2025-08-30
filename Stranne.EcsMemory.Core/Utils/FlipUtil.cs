@@ -30,6 +30,8 @@ internal static class FlipUtil
             return;
 
         world.Add<Revealed>(cardEntity);
+        world.IncrementStateVersion();
+        world.MarkChanged(cardEntity);
 
         if (gameState.FirstFlipped is null)
         {
@@ -41,13 +43,13 @@ internal static class FlipUtil
         {
             gameState.IsLocked = true;
 
+            // TODO ignore pending evaluation if they match, as there is no need to wait for feedback in that case
+
             var config = world.GetSingletonRef<Config>();
             world.Create(new PendingEvaluation { UpdatesLeft = config.EvalDelayUpdates });
 
             logger.LogDebug("Flipped second card at {GridPosition}, evaluation pending.", flipGridPosition);
         }
-
-        gameState.StateVersion++;
     }
 
     private static bool TryGetCardToFlipByGridPosition(World world, GridPosition flipGridPosition, out Entity cardEntity)

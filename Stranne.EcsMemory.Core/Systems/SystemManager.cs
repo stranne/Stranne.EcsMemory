@@ -5,7 +5,7 @@ using Stranne.EcsMemory.Contracts.Snapshots;
 using Stranne.EcsMemory.Core.Commands.Abstractions;
 
 namespace Stranne.EcsMemory.Core.Systems;
-internal sealed class SystemManager : IDisposable
+internal sealed class SystemManager : ISystemManager
 {
     private readonly Group<float> _systems;
     private readonly CommandProcessingSystem _commandProcessingSystem;

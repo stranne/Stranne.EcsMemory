@@ -20,7 +20,7 @@ internal sealed class WinCheckSystem(World world, ILogger<WinCheckSystem> logger
 
         gameState.IsLocked = true;
         gameState.IsWon = true;
-        gameState.StateVersion++;
+        World.IncrementStateVersion();
 
         var gameWon = new GameWon(gameState.Moves, gameState.TotalCards, gameState.StateVersion);
         EventBus.Send(in gameWon);

@@ -9,15 +9,15 @@ internal static class BoardSetupUtil
 {
     public static void BuildBoard(World world, Config config)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(config.Cols);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(config.Columns);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(config.Rows);
 
-        var totalCards = config.Cols * config.Rows;
+        var totalCards = config.Columns * config.Rows;
         if ((totalCards & 1) != 0)
             throw new ArgumentException("Board size must be even (Columns * Rows).", nameof(config));
 
-        CreateNewCards(world, config, totalCards);
         ResetGameState(world, totalCards);
+        CreateNewCards(world, config, totalCards);
     }
 
     private static void CreateNewCards(World world, Config config, int totalCards)
@@ -34,17 +34,19 @@ internal static class BoardSetupUtil
         var random = new Random(config.Seed);
         ShuffleInPlace(deck, random);
 
+        var stateVersion = world.GetSingletonRef<GameState>().StateVersion;
         var id = 0;
         for (var index = 0; index < deck.Length; index++)
         {
-            var x = index % config.Cols;
-            var y = index / config.Cols;
+            var x = index % config.Columns;
+            var y = index / config.Columns;
 
             _ = world.Create(
                 new CardId(id++),
                 deck[index],
                 new GridPosition(x, y),
-                new Selectable());
+                new Selectable(),
+                new LastChangedStateVersion(stateVersion));
         }
     }
 
@@ -79,6 +81,6 @@ internal static class BoardSetupUtil
             IsWon = false,
             TotalCards = totalCards,
             MatchedCount = 0,
-            StateVersion = 0
+            StateVersion = 1
         });
 }

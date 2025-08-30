@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net9.0</TargetFramework>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="NSubstitute" Version="5.3.0" />
-    <PackageReference Include="TUnit" Version="0.57.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="NSubstitute" Version="5.3.0" />
+		<PackageReference Include="TUnit" Version="0.57.1" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Stranne.EcsMemory.Core\Stranne.EcsMemory.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Stranne.EcsMemory.Core\Stranne.EcsMemory.Core.csproj" />
+	</ItemGroup>
 
 </Project>

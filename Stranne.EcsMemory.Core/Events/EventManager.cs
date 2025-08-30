@@ -3,7 +3,7 @@ using Stranne.EcsMemory.Contracts.Event;
 using System.Collections.Concurrent;
 
 namespace Stranne.EcsMemory.Core.Events;
-public sealed partial class EventManager : IDisposable
+public sealed partial class EventManager : IEventManager
 {
     private readonly ConcurrentQueue<Action> _actionQueue = new();
     private readonly IGameEvents _gameEvents;
@@ -28,6 +28,6 @@ public sealed partial class EventManager : IDisposable
         _actionQueue.Enqueue(() => _gameEvents.OnGameWon(moves, totalCards));
     }
 
-    public void Dispose() => 
+    public void Dispose() =>
         Unhook();
 }

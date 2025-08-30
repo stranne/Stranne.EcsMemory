@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Godot;
 using Godot.Collections;
 using Microsoft.Extensions.Logging;
@@ -10,7 +11,7 @@ using Stranne.EcsMemory.Game.Utils;
 namespace Stranne.EcsMemory.Game.Scenes;
 public sealed partial class Game : Control, IGameEvents
 {
-    private readonly MemoryAdapter _memoryAdapter;
+    private readonly GameAdapter _gameAdapter;
     private readonly Dictionary<int, Button> _cardButtons = [];
     private readonly ILogger<Game> _logger = GodotLoggerFactory.Instance.CreateLogger<Game>();
 
@@ -24,7 +25,7 @@ public sealed partial class Game : Control, IGameEvents
     private Button _newGameButton = null!;
 
     public Game() => 
-        _memoryAdapter = new(this, GodotLoggerFactory.Instance);
+        _gameAdapter = new(this, GodotLoggerFactory.Instance);
 
     public override void _Ready()
     {
@@ -50,18 +51,18 @@ public sealed partial class Game : Control, IGameEvents
             : _seed;
         _logger.LogDebug("{StartNewGameName} seed: {Seed}.", nameof(StartNewGame), seed);
 
-        _memoryAdapter.StartNewGame(_columns, _rows, seed);
+        _gameAdapter.StartNewGame(_columns, _rows, seed);
 
-        _memoryAdapter.Update(0);
-        BuildGrid(_memoryAdapter.GameSnapshot);
+        _gameAdapter.Update(0);
+        BuildGrid(_gameAdapter.GetGameSnapshot());
     }
 
     private void Update(float delta = 0)
     {
-        _memoryAdapter.Update(delta);
+        _gameAdapter.Update(delta);
 
-        if (_memoryAdapter.HasRenderModelChanged())
-            UpdateView(_memoryAdapter.GameSnapshot);
+        if (_gameAdapter.HasSnapshotChanged())
+            UpdateView(_gameAdapter.GetGameSnapshot());
     }
 
     private void BuildGrid(GameSnapshot model)
@@ -96,7 +97,7 @@ public sealed partial class Game : Control, IGameEvents
     {
         _movesLabel.Text = $"Moves: {model.Moves}";
 
-        foreach (var card in model.Cards)
+        foreach (var card in model.Cards.Where(x => x.HasChanged))
         {
             if (!_cardButtons.TryGetValue(card.Id, out var button))
                 continue;
@@ -105,9 +106,9 @@ public sealed partial class Game : Control, IGameEvents
                 ? card.PairKey is { } pairKey ? (pairKey + 1).ToString() : "?"
                 : "";
 
-            button.Disabled = model.IsLocked || card.IsMatched;
+            button.Disabled = model.IsLocked || card.IsFacedUp || card.IsMatched;
             button.Modulate = card.IsMatched
-                ? new Color(1, 1, 1, 0.8f)
+                ? new Color(1, 1, 1, 0.6f)
                 : Colors.White;
         }
     }
@@ -115,7 +116,7 @@ public sealed partial class Game : Control, IGameEvents
     private void OnCardPress(int x, int y)
     {
         _logger.LogDebug("{OnCardPressName} ({X}, {Y}).", nameof(OnCardPress), x, y);
-        _memoryAdapter.FlipCardAt(x, y);
+        _gameAdapter.FlipCardAt(x, y);
         Update();
     }
 
@@ -126,6 +127,6 @@ public sealed partial class Game : Control, IGameEvents
     {
         _newGameButton.Pressed -= StartNewGame;
 
-        _memoryAdapter.Dispose();
+        _gameAdapter.Dispose();
     }
 }

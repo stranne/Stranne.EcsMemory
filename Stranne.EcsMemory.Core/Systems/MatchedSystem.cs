@@ -44,6 +44,9 @@ internal sealed class MatchedSystem(World world, ILogger<MatchedSystem> logger)
                 World.Remove<Revealed>(secondEntity);
                 logger.LogDebug("No match: {PairKeyA} != {PairKeyB}", pairKeyA.Value, pairKeyB.Value);
             }
+
+            World.IncrementStateVersion();
+            World.MarkChanged(firstEntity, secondEntity);
         }
 
         ResetTurn();
@@ -95,7 +98,7 @@ internal sealed class MatchedSystem(World world, ILogger<MatchedSystem> logger)
         gameState.Moves++;
         gameState.FirstFlipped = null;
         gameState.IsLocked = false;
-        gameState.StateVersion++;
+        World.IncrementStateVersion();
     }
 
     private void RemovePendingEvaluation(Entity pendingEvaluationEntity) =>

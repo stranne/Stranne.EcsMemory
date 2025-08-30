@@ -12,5 +12,5 @@ public sealed record GameSnapshot
     public required bool IsLocked { get; init; }
     public required bool IsWon { get; init; }
 
-    public required int Version { get; init; }
+    public required uint CurrentStateVersion { get; init; }
 }

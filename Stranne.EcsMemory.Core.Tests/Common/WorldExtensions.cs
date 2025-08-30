@@ -2,6 +2,7 @@
 using Stranne.EcsMemory.Core.Components.Singleton;
 using Stranne.EcsMemory.Core.Components.Tags;
 using Stranne.EcsMemory.Core.Components.Value;
+using Stranne.EcsMemory.Core.Extensions;
 
 namespace Stranne.EcsMemory.Core.Tests.Common;
 internal static class WorldExtensions
@@ -15,11 +16,13 @@ internal static class WorldExtensions
         int x = 0,
         int y = 0)
     {
+        var gameState = world.GetSingletonRef<GameState>();
         var entity = world.Create(
             new CardId(cardId),
             new PairKey(pairKey),
             new GridPosition(x, y),
-            new Selectable());
+            new Selectable(),
+            new LastChangedStateVersion(gameState.StateVersion));
 
         if (revealed)
             world.Add<Revealed>(entity);
