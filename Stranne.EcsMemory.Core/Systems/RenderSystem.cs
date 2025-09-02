@@ -42,8 +42,7 @@ internal sealed class RenderSystem(World world)
         {
             var isRevealed = World.Has<Revealed>(entity);
             var isMatched = World.Has<Matched>(entity);
-            var isFacedUp = isRevealed || isMatched;
-            var pairKey = isFacedUp
+            var pairKey = isRevealed
                 ? World.Get<PairKey>(entity).Value
                 : (int?)null;
 
@@ -52,7 +51,7 @@ internal sealed class RenderSystem(World world)
                 Id = cardId.Value,
                 X = gridPosition.X,
                 Y = gridPosition.Y,
-                IsFacedUp = isFacedUp,
+                IsRevealed = isRevealed,
                 IsMatched = isMatched,
                 PairKey = pairKey,
                 StateVersion = lastChangedStateVersion.StateVersion

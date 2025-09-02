@@ -13,3 +13,5 @@ obj/
 *.old
 *.translation
 *.csproj.user
+
+save.json

@@ -11,7 +11,6 @@ internal static class TestWorldFactory
         world.SetOrCreateSingleton(new GameState
         {
             IsLocked = isLocked,
-            FirstFlipped = null,
             Moves = moves,
             IsWon = isWon,
             TotalCards = totalCards,

@@ -1,2 +1,0 @@
-namespace Stranne.EcsMemory.Core.Components.Tags;
-internal readonly struct Selectable;

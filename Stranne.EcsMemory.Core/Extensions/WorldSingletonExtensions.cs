@@ -21,17 +21,9 @@ internal static class WorldSingletonExtensions
 
     private static bool TryGetSingleton<T>(World world, out Entity entity) where T : struct
     {
-        Entity innerEntity = default;
-        var found = false;
-
         var query = Cache<T>.Query;
-        world.Query(in query, queryEntity =>
-        {
-            innerEntity = queryEntity;
-            found = true;
-        });
-
-        entity = innerEntity;
+        var found = world.TryGetFirst(query, out var foundEntity);
+        entity = foundEntity;
         return found;
     }
 

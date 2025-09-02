@@ -45,7 +45,6 @@ internal static class BoardSetupUtil
                 new CardId(id++),
                 deck[index],
                 new GridPosition(x, y),
-                new Selectable(),
                 new LastChangedStateVersion(stateVersion));
         }
     }
@@ -75,7 +74,6 @@ internal static class BoardSetupUtil
     private static void ResetGameState(World world, int totalCards) =>
         world.SetOrCreateSingleton(new GameState
         {
-            FirstFlipped = null,
             IsLocked = false,
             Moves = 0,
             IsWon = false,

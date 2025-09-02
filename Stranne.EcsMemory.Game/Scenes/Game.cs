@@ -24,8 +24,14 @@ public sealed partial class Game : Control, IGameEvents
     private Label _movesLabel = null!;
     private Button _newGameButton = null!;
 
-    public Game() => 
-        _gameAdapter = new(this, GodotLoggerFactory.Instance);
+    public Game()
+    {
+        var seed = _seed == 0 
+            ? null as int?
+            : _seed;
+        _gameAdapter = GameAdapter.LoadOrCreateNewGame(_columns, _rows, seed, this,
+            GodotLoggerFactory.Instance);
+    }
 
     public override void _Ready()
     {
@@ -38,7 +44,9 @@ public sealed partial class Game : Control, IGameEvents
 
         _newGameButton.Pressed += StartNewGame;
 
-        StartNewGame();
+        // Initialize view with current state (loaded save or new game)
+        _gameAdapter.Update(0);
+        RebuildAndUpdateView(_gameAdapter.GetGameSnapshot());
     }
 
     public override void _PhysicsProcess(double delta) =>
@@ -54,7 +62,7 @@ public sealed partial class Game : Control, IGameEvents
         _gameAdapter.StartNewGame(_columns, _rows, seed);
 
         _gameAdapter.Update(0);
-        BuildGrid(_gameAdapter.GetGameSnapshot());
+        RebuildAndUpdateView(_gameAdapter.GetGameSnapshot());
     }
 
     private void Update(float delta = 0)
@@ -62,7 +70,7 @@ public sealed partial class Game : Control, IGameEvents
         _gameAdapter.Update(delta);
 
         if (_gameAdapter.HasSnapshotChanged())
-            UpdateView(_gameAdapter.GetGameSnapshot());
+            UpdateChangedCards(_gameAdapter.GetGameSnapshot());
     }
 
     private void BuildGrid(GameSnapshot model)
@@ -93,24 +101,37 @@ public sealed partial class Game : Control, IGameEvents
         }
     }
 
-    private void UpdateView(GameSnapshot model)
+    private void RebuildAndUpdateView(GameSnapshot model)
     {
+        BuildGrid(model);
+        UpdateMovesLabel(model);
+        foreach (var card in model.Cards)
+            UpdateCard(model, card);
+    }
+
+    private void UpdateChangedCards(GameSnapshot model)
+    {
+        UpdateMovesLabel(model);
+        foreach (var card in model.Cards.Where(x => x.HasChanged))
+            UpdateCard(model, card);
+    }
+
+    private void UpdateMovesLabel(GameSnapshot model) => 
         _movesLabel.Text = $"Moves: {model.Moves}";
 
-        foreach (var card in model.Cards.Where(x => x.HasChanged))
-        {
-            if (!_cardButtons.TryGetValue(card.Id, out var button))
-                continue;
+    private void UpdateCard(GameSnapshot model, CardSnapshot card)
+    {
+        if (!_cardButtons.TryGetValue(card.Id, out var button))
+            return;
 
-            button.Text = card.IsFacedUp
-                ? card.PairKey is { } pairKey ? (pairKey + 1).ToString() : "?"
-                : "";
+        button.Text = card.IsRevealed
+            ? card.PairKey is { } pairKey ? (pairKey + 1).ToString() : "?"
+            : "";
 
-            button.Disabled = model.IsLocked || card.IsFacedUp || card.IsMatched;
-            button.Modulate = card.IsMatched
-                ? new Color(1, 1, 1, 0.6f)
-                : Colors.White;
-        }
+        button.Disabled = model.IsLocked || card.IsRevealed || card.IsMatched;
+        button.Modulate = card.IsMatched
+            ? new Color(1, 1, 1, 0.6f)
+            : Colors.White;
     }
 
     private void OnCardPress(int x, int y)
@@ -127,6 +148,7 @@ public sealed partial class Game : Control, IGameEvents
     {
         _newGameButton.Pressed -= StartNewGame;
 
+        _gameAdapter.SaveGame();
         _gameAdapter.Dispose();
     }
 }

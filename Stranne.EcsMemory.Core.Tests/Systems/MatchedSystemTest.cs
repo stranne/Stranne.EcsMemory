@@ -7,6 +7,7 @@ using Stranne.EcsMemory.Core.Systems;
 using Stranne.EcsMemory.Core.Tests.Common;
 
 namespace Stranne.EcsMemory.Core.Tests.Systems;
+[NotInParallel]
 internal sealed class MatchedSystemTest
 {
     private static readonly ILogger<MatchedSystem> Logger = new NullLogger<MatchedSystem>();
@@ -72,7 +73,6 @@ internal sealed class MatchedSystemTest
 
             var gameState = world.GetSingletonRef<GameState>();
             await Assert.That(gameState.IsLocked).IsFalse();
-            await Assert.That(gameState.FirstFlipped).IsNull();
             await Assert.That(gameState.Moves).IsEqualTo(1);
             await Assert.That(gameState.MatchedCount).IsEqualTo(2);
         }
@@ -100,7 +100,6 @@ internal sealed class MatchedSystemTest
 
             var gameState = world.GetSingletonRef<GameState>();
             await Assert.That(gameState.IsLocked).IsFalse();
-            await Assert.That(gameState.FirstFlipped).IsNull();
             await Assert.That(gameState.Moves).IsEqualTo(1);
             await Assert.That(gameState.MatchedCount).IsEqualTo(0);
         }
@@ -124,7 +123,6 @@ internal sealed class MatchedSystemTest
 
             var gameState = world.GetSingletonRef<GameState>();
             await Assert.That(gameState.IsLocked).IsFalse();
-            await Assert.That(gameState.FirstFlipped).IsNull();
             await Assert.That(gameState.Moves).IsEqualTo(1);
             await Assert.That(gameState.MatchedCount).IsEqualTo(0);
         }

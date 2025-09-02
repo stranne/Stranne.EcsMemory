@@ -96,7 +96,6 @@ internal sealed class MatchedSystem(World world, ILogger<MatchedSystem> logger)
         ref var gameState = ref World.GetSingletonRef<GameState>();
 
         gameState.Moves++;
-        gameState.FirstFlipped = null;
         gameState.IsLocked = false;
         World.IncrementStateVersion();
     }

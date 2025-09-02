@@ -9,6 +9,7 @@ using Stranne.EcsMemory.Core.Utils;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Stranne.EcsMemory.Core.Tests.Utils;
+[NotInParallel]
 internal sealed class FlipUtilTest
 {
     private const int EvalDelayUpdates = 10;
@@ -27,7 +28,6 @@ internal sealed class FlipUtilTest
         {
             var gameState = world.GetSingletonRef<GameState>();
             await Assert.That(gameState.IsLocked).IsTrue();
-            await Assert.That(gameState.FirstFlipped).IsNull();
             await Assert.That(gameState.Moves).IsEqualTo(0);
             await AssertNumberOfRevealed(world, 0);
             await AssertNumberOfPendingEvaluations(world, 0);
@@ -66,7 +66,6 @@ internal sealed class FlipUtilTest
         using (Assert.Multiple())
         {
             await Assert.That(world.GetSingletonRef<GameState>().IsLocked).IsFalse();
-            await Assert.That(world.GetSingletonRef<GameState>().FirstFlipped).IsNull();
             await Assert.That(world.GetSingletonRef<GameState>().Moves).IsEqualTo(0);
             await AssertNumberOfRevealed(world, 1);
             await AssertNumberOfPendingEvaluations(world, 0);
@@ -85,7 +84,6 @@ internal sealed class FlipUtilTest
         using (Assert.Multiple())
         {
             await Assert.That(gameState.IsLocked).IsFalse();
-            await Assert.That(gameState.FirstFlipped).IsNotNull();
             await Assert.That(gameState.Moves).IsEqualTo(0);
             await AssertNumberOfRevealed(world, 1);
             await AssertNumberOfPendingEvaluations(world, 0);
@@ -98,16 +96,11 @@ internal sealed class FlipUtilTest
         using var world = TestWorldFactory.Create();
         world.CreateCard();
 
-        var alreadyFlippedCard = world.Create(
+        _ = world.Create(
             new CardId(1),
             new PairKey(0),
             (0, 1),
-            new Selectable(),
             new Revealed());
-        world.SetOrCreateSingleton(new GameState
-        {
-            FirstFlipped = alreadyFlippedCard
-        });
 
         FlipUtil.TryFlip(world, GridPosition, Logger);
 
@@ -115,7 +108,6 @@ internal sealed class FlipUtilTest
         using (Assert.Multiple())
         {
             await Assert.That(gameState.IsLocked).IsTrue();
-            await Assert.That(gameState.FirstFlipped).IsEqualTo(alreadyFlippedCard);
             await Assert.That(gameState.Moves).IsEqualTo(0);
             await AssertNumberOfRevealed(world, 2);
             await AssertNumberOfPendingEvaluations(world, 1);
@@ -130,7 +122,6 @@ internal sealed class FlipUtilTest
         using (Assert.Multiple())
         {
             await Assert.That(gameState.IsLocked).IsFalse();
-            await Assert.That(gameState.FirstFlipped).IsNull();
             await Assert.That(gameState.Moves).IsEqualTo(0);
             await AssertNumberOfRevealed(world, 0);
             await AssertNumberOfPendingEvaluations(world, 0);

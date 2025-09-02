@@ -8,6 +8,10 @@ using Stranne.EcsMemory.Core.Extensions;
 namespace Stranne.EcsMemory.Core.Utils;
 internal static class FlipUtil
 {
+    private static readonly QueryDescription FlippedButNotMatchedQuery = new QueryDescription()
+        .WithAll<Revealed>()
+        .WithNone<Matched>();
+
     public static void TryFlip(World world, GridPosition flipGridPosition, ILogger logger)
     {
         ref var gameState = ref world.GetSingletonRef<GameState>();
@@ -29,14 +33,14 @@ internal static class FlipUtil
         if (world.Has<Revealed>(cardEntity))
             return;
 
+        var isFirstFlipped = !world.TryGetFirst(FlippedButNotMatchedQuery, out _);
+
         world.Add<Revealed>(cardEntity);
         world.IncrementStateVersion();
         world.MarkChanged(cardEntity);
 
-        if (gameState.FirstFlipped is null)
+        if (isFirstFlipped)
         {
-            gameState.FirstFlipped = cardEntity;
-
             logger.LogDebug("Flipped first card at {GridPosition}.", flipGridPosition);
         }
         else
@@ -55,7 +59,7 @@ internal static class FlipUtil
     private static bool TryGetCardToFlipByGridPosition(World world, GridPosition flipGridPosition, out Entity cardEntity)
     {
         var cardQuery = new QueryDescription()
-            .WithAll<GridPosition, Selectable, PairKey, CardId>();
+            .WithAll<GridPosition, PairKey, CardId>();
         Entity entity = default;
         var found = false;
         world.Query(in cardQuery, (Entity innerEntity, ref GridPosition cardGridPosition) =>

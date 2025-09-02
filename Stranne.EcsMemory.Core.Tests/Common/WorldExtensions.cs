@@ -21,7 +21,6 @@ internal static class WorldExtensions
             new CardId(cardId),
             new PairKey(pairKey),
             new GridPosition(x, y),
-            new Selectable(),
             new LastChangedStateVersion(gameState.StateVersion));
 
         if (revealed)

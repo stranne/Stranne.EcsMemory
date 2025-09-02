@@ -2,6 +2,7 @@
 using Stranne.EcsMemory.Core.Tests.Common;
 
 namespace Stranne.EcsMemory.Core.Tests.Systems;
+[NotInParallel]
 internal sealed class RenderSystemTest
 {
     [Test]
@@ -47,24 +48,25 @@ internal sealed class RenderSystemTest
     }
 
     [Test]
-    [Arguments(false, false, false)]
-    [Arguments(false, true, true)]
-    [Arguments(true, false, true)]
-    [Arguments(true, true, true)]
-    public async Task RenderQuery_FacePolicy(bool isRevealed, bool isMatched, bool expectedIsFacedUp)
+    [Arguments(false)]
+    [Arguments(false)]
+    public async Task RenderQuery_PairKeyExposed(bool isRevealed)
     {
         using var world = TestWorldFactory.Create();
-        _ = world.CreateCard(pairKey: 1, revealed: isRevealed, matched: isMatched);
+        _ = world.CreateCard(pairKey: 1, revealed: isRevealed);
         using var sut = new RenderSystem(world);
 
         sut.Update(0);
 
         var renderedCard = sut.GameSnapshot.Cards.Single();
-        await Assert.That(renderedCard.IsFacedUp).IsEqualTo(expectedIsFacedUp);
-        if (expectedIsFacedUp)
-            await Assert.That(renderedCard.PairKey).IsEqualTo(1);
-        else
-            await Assert.That(renderedCard.PairKey).IsNull();
+        using (Assert.Multiple())
+        {
+            await Assert.That(renderedCard.IsRevealed).IsEqualTo(isRevealed);
+            if (isRevealed)
+                await Assert.That(renderedCard.PairKey).IsEqualTo(1);
+            else
+                await Assert.That(renderedCard.PairKey).IsNull();
+        }
     }
 
     [Test]

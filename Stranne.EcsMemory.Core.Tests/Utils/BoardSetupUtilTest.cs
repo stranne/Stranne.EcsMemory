@@ -8,6 +8,7 @@ using Stranne.EcsMemory.Core.Utils;
 using System.Runtime.InteropServices;
 
 namespace Stranne.EcsMemory.Core.Tests.Utils;
+[NotInParallel]
 internal sealed class BoardSetupUtilTest
 {
     [Test]
@@ -121,18 +122,16 @@ internal sealed class BoardSetupUtilTest
         using (Assert.Multiple())
         {
             var cardQuery = new QueryDescription().WithAll<CardId>();
-            bool anyMatched = false, anyRevealed = false, allSelectable = true;
+            bool anyMatched = false, anyRevealed = false;
 
-            world.Query(in cardQuery, (entity) =>
+            world.Query(in cardQuery, entity =>
             {
                 anyMatched |= world.Has<Matched>(entity);
                 anyRevealed |= world.Has<Revealed>(entity);
-                allSelectable &= world.Has<Selectable>(entity);
             });
 
             await Assert.That(anyMatched).IsFalse();
             await Assert.That(anyRevealed).IsFalse();
-            await Assert.That(allSelectable).IsTrue();
 
             var gameStateQuery = new QueryDescription().WithAll<GameState>();
             var found = false;
@@ -144,7 +143,6 @@ internal sealed class BoardSetupUtilTest
             });
 
             await Assert.That(found).IsTrue();
-            await Assert.That(gameState.FirstFlipped).IsNull();
             await Assert.That(gameState.IsLocked).IsFalse();
             await Assert.That(gameState.Moves).IsEqualTo(0);
         }

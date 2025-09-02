@@ -7,22 +7,27 @@ using Stranne.EcsMemory.Core;
 namespace Stranne.EcsMemory.Adapter;
 public sealed class GameAdapter : IDisposable
 {
-    private readonly MemoryGameCore _memoryGameCore;
+    private const string SaveFileName = "save.json";
+
+    private readonly GameCore _gameCore;
 
     private uint _lastProcessedStateVersion;
 
-    public GameAdapter(IGameEvents gameEvents, ILoggerFactory? loggerFactory = null)
+    private GameAdapter(GameCore gameCore) =>
+        _gameCore = gameCore;
+
+    public static GameAdapter LoadOrCreateNewGame(int columns, int rows, int? seed, IGameEvents gameEvents, ILoggerFactory? loggerFactory = null)
     {
         loggerFactory ??= NullLoggerFactory.Instance;
-        _memoryGameCore = MemoryGameCore.Create(gameEvents, loggerFactory);
+        return new GameAdapter(LoadGame(columns, rows, seed, gameEvents, loggerFactory));
     }
 
-    public bool HasSnapshotChanged() => 
-        _memoryGameCore.GameSnapshot.CurrentStateVersion != _lastProcessedStateVersion;
+    public bool HasSnapshotChanged() =>
+        _gameCore.GameSnapshot.CurrentStateVersion != _lastProcessedStateVersion;
 
     public GameSnapshot GetGameSnapshot()
     {
-        var gameSnapshot = _memoryGameCore.GameSnapshot;
+        var gameSnapshot = _gameCore.GameSnapshot;
         foreach (var cardSnapshot in gameSnapshot.Cards)
         {
             if (cardSnapshot.StateVersion > _lastProcessedStateVersion)
@@ -34,14 +39,30 @@ public sealed class GameAdapter : IDisposable
     }
 
     public void StartNewGame(int columns, int rows, int seed) =>
-        _memoryGameCore.StartNewGame(columns, rows, seed);
+        _gameCore.StartNewGame(columns, rows, seed);
 
     public void FlipCardAt(int x, int y) =>
-        _memoryGameCore.FlipCardAt(x, y);
+        _gameCore.FlipCardAt(x, y);
 
-    public void Update(float deltaTime) => 
-        _memoryGameCore.Update(deltaTime);
+    public void Update(float deltaTime) =>
+        _gameCore.Update(deltaTime);
 
-    public void Dispose() => 
-        _memoryGameCore.Dispose();
+    public void SaveGame() => 
+        File.WriteAllText(SaveFileName, _gameCore.Serialize());
+
+    private static GameCore LoadGame(int columns, int rows, int? seed, IGameEvents gameEvents, ILoggerFactory loggerFactory)
+    {
+        if (!File.Exists(SaveFileName))
+        {
+            var gameCore = GameCore.Create(gameEvents, loggerFactory);
+            gameCore.StartNewGame(columns, rows, seed ?? Random.Shared.Next());
+            return gameCore;
+        }
+
+        var text = File.ReadAllText(SaveFileName);
+        return GameCore.Create(gameEvents, loggerFactory, text);
+    }
+
+    public void Dispose() =>
+        _gameCore.Dispose();
 }
