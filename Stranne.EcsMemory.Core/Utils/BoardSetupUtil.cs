@@ -1,12 +1,13 @@
 ﻿using Arch.Core;
 using Stranne.EcsMemory.Core.Components.Singleton;
-using Stranne.EcsMemory.Core.Components.Tags;
 using Stranne.EcsMemory.Core.Components.Value;
 using Stranne.EcsMemory.Core.Extensions;
 
 namespace Stranne.EcsMemory.Core.Utils;
 internal static class BoardSetupUtil
 {
+    private static readonly QueryDescription CardIdQuery = new QueryDescription().WithAll<CardId>();
+
     public static void BuildBoard(World world, Config config)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(config.Columns);
@@ -51,9 +52,8 @@ internal static class BoardSetupUtil
 
     private static void DestroyAnyExistingCards(World world)
     {
-        var queryCards = new QueryDescription().WithAll<CardId>();
         var entitiesToDestroy = new List<Entity>();
-        world.Query(in queryCards, entitiesToDestroy.Add);
+        world.Query(in CardIdQuery, entitiesToDestroy.Add);
 
         foreach (var entity in entitiesToDestroy)
             world.Destroy(entity);

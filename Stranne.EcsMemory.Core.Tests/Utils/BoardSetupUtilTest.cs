@@ -11,6 +11,10 @@ namespace Stranne.EcsMemory.Core.Tests.Utils;
 [NotInParallel]
 internal sealed class BoardSetupUtilTest
 {
+    private static readonly QueryDescription CardIdQuery = new QueryDescription().WithAll<CardId>();
+    private static readonly QueryDescription GridPositionQuery = new QueryDescription().WithAll<GridPosition>();
+    private static readonly QueryDescription GameStateQuery = new QueryDescription().WithAll<GameState>();
+
     [Test]
     public void BuildBoard_Throws_OnOddCellCount()
     {
@@ -31,8 +35,7 @@ internal sealed class BoardSetupUtilTest
 
         using (Assert.Multiple())
         {
-            var queryCards = new QueryDescription().WithAll<CardId>();
-            var cardCount = world.CountEntities(in queryCards);
+            var cardCount = world.CountEntities(in CardIdQuery);
             await Assert.That(cardCount).IsEqualTo(expectedCardCount);
 
             var gameState = world.GetSingletonRef<GameState>();
@@ -48,11 +51,10 @@ internal sealed class BoardSetupUtilTest
 
         BoardSetupUtil.BuildBoard(world, config);
 
-        var gridPositionQuery = new QueryDescription().WithAll<GridPosition>();
         var seen = new HashSet<(int x, int y)>();
         var withinBounds = true;
 
-        world.Query(in gridPositionQuery, (Entity _, ref GridPosition gridPosition) =>
+        world.Query(in GridPositionQuery, (Entity _, ref GridPosition gridPosition) =>
         {
             withinBounds &= gridPosition.X >= 0 && gridPosition.X < config.Columns && gridPosition.Y >= 0 && gridPosition.Y < config.Rows;
             seen.Add((gridPosition.X, gridPosition.Y));
@@ -73,9 +75,8 @@ internal sealed class BoardSetupUtilTest
 
         BoardSetupUtil.BuildBoard(world, config);
 
-        var gridPositionQuery = new QueryDescription().WithAll<GridPosition>();
         var counts = new Dictionary<PairKey, int>();
-        world.Query(in gridPositionQuery, (Entity _, ref PairKey pairKey) =>
+        world.Query(in GridPositionQuery, (Entity _, ref PairKey pairKey) =>
         {
             ref var slot = ref CollectionsMarshal.GetValueRefOrAddDefault(counts, pairKey, out var exists);
             if (!exists) slot = 0;
@@ -95,15 +96,14 @@ internal sealed class BoardSetupUtilTest
         using var world1 = TestWorldFactory.Create();
         using var world2 = TestWorldFactory.Create();
 
-        var gridPositionQuery = new QueryDescription().WithAll<GridPosition>();
         var map1 = new Dictionary<GridPosition, PairKey>();
         var map2 = new Dictionary<GridPosition, PairKey>();
 
-        world1.Query(in gridPositionQuery, (Entity _, ref GridPosition gridPosition, ref PairKey pairKey) =>
+        world1.Query(in GridPositionQuery, (Entity _, ref GridPosition gridPosition, ref PairKey pairKey) =>
         {
             map1[gridPosition] = pairKey;
         });
-        world2.Query(in gridPositionQuery, (Entity _, ref GridPosition gridPosition, ref PairKey pairKey) =>
+        world2.Query(in GridPositionQuery, (Entity _, ref GridPosition gridPosition, ref PairKey pairKey) =>
         {
             map2[gridPosition] = pairKey;
         });
@@ -121,10 +121,9 @@ internal sealed class BoardSetupUtilTest
 
         using (Assert.Multiple())
         {
-            var cardQuery = new QueryDescription().WithAll<CardId>();
             bool anyMatched = false, anyRevealed = false;
 
-            world.Query(in cardQuery, entity =>
+            world.Query(in CardIdQuery, entity =>
             {
                 anyMatched |= world.Has<Matched>(entity);
                 anyRevealed |= world.Has<Revealed>(entity);
@@ -133,10 +132,9 @@ internal sealed class BoardSetupUtilTest
             await Assert.That(anyMatched).IsFalse();
             await Assert.That(anyRevealed).IsFalse();
 
-            var gameStateQuery = new QueryDescription().WithAll<GameState>();
             var found = false;
             GameState gameState = default;
-            world.Query(in gameStateQuery, (Entity _, ref GameState state) =>
+            world.Query(in GameStateQuery, (Entity _, ref GameState state) =>
             {
                 found = true;
                 gameState = state;
@@ -157,8 +155,7 @@ internal sealed class BoardSetupUtilTest
         BoardSetupUtil.BuildBoard(world, config);
         BoardSetupUtil.BuildBoard(world, config);
 
-        var cardQuery = new QueryDescription().WithAll<CardId>();
-        var cardCount = world.CountEntities(in cardQuery);
+        var cardCount = world.CountEntities(in CardIdQuery);
         await Assert.That(cardCount).IsEqualTo(config.Columns * config.Rows);
     }
 

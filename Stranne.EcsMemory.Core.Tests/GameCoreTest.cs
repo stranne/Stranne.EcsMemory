@@ -13,6 +13,8 @@ namespace Stranne.EcsMemory.Core.Tests;
 [NotInParallel]
 internal sealed class GameCoreTest
 {
+    private static readonly QueryDescription CardIdQuery = new QueryDescription().WithAll<CardId>();
+
     [Test]
     public async Task GameCore_StartNewGame_EnqueuesSingleCommandWithCorrectValues()
     {
@@ -71,7 +73,7 @@ internal sealed class GameCoreTest
             await Assert.That(actualSerializeData).IsNotNullOrEmpty();
             await Assert.That(actualGameCore).IsNotNull();
             await Assert.That(actualGameCore).IsNotEqualTo(sut);
-            await Assert.That(actualGameCore.World.CountEntities(new QueryDescription().WithAll<CardId>())).IsEqualTo(12);
+            await Assert.That(actualGameCore.World.CountEntities(in CardIdQuery)).IsEqualTo(12);
         }
     }
 }

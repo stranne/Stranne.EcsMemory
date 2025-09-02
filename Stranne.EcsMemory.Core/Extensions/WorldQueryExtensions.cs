@@ -1,5 +1,4 @@
 ﻿using Arch.Core;
-using Stranne.EcsMemory.Core.Components.Tags;
 
 namespace Stranne.EcsMemory.Core.Extensions;
 internal static class WorldQueryExtensions

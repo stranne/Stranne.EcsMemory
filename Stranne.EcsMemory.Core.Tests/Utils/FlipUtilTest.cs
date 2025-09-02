@@ -17,6 +17,10 @@ internal sealed class FlipUtilTest
     private static readonly GridPosition GridPosition = new(0, 0);
     private static readonly ILogger Logger = new NullLoggerFactory().CreateLogger(nameof(FlipUtilTest));
 
+    private static readonly QueryDescription RevealedQuery = new QueryDescription().WithAll<Revealed>();
+    private static readonly QueryDescription PendingEvaluationQuery = new QueryDescription().WithAll<PendingEvaluation>();
+    private static readonly QueryDescription MatchedQuery = new QueryDescription().WithAll<Matched>();
+
     [Test]
     public async Task TryFlip_GameLocked_DoesNotFlipCard()
     {
@@ -147,31 +151,27 @@ internal sealed class FlipUtilTest
 
     private static async Task AssertNumberOfRevealed(World world, int expectedRevealCount)
     {
-        var query = new QueryDescription().WithAll<Revealed>();
-        var revealedCount = world.CountEntities(query);
+        var revealedCount = world.CountEntities(in RevealedQuery);
         await Assert.That(revealedCount).IsEqualTo(expectedRevealCount);
     }
 
     private static async Task AssertNumberOfPendingEvaluations(World world, int expectedPendingEvaluationCount)
     {
-        var query = new QueryDescription().WithAll<PendingEvaluation>();
-        var pendingCount = world.CountEntities(query);
+        var pendingCount = world.CountEntities(in PendingEvaluationQuery);
         await Assert.That(pendingCount).IsEqualTo(expectedPendingEvaluationCount);
     }
 
     private static async Task AssertNumberOfMatched(World world, int expectedMatchedCount)
     {
-        var query = new QueryDescription().WithAll<Matched>();
-        var matchedCount = world.CountEntities(query);
+        var matchedCount = world.CountEntities(in MatchedQuery);
         await Assert.That(matchedCount).IsEqualTo(expectedMatchedCount);
     }
 
     private static async Task AssertPendingEvaluationDelayEquals(World world, int expected)
     {
-        var query = new QueryDescription().WithAll<PendingEvaluation>();
         var found = false;
         PendingEvaluation pendingEvaluation = default;
-        world.Query(in query, (ref PendingEvaluation innerPendingEvaluation) =>
+        world.Query(in PendingEvaluationQuery, (ref PendingEvaluation innerPendingEvaluation) =>
         {
             pendingEvaluation = innerPendingEvaluation;
             found = true;

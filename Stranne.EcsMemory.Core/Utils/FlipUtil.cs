@@ -1,4 +1,4 @@
-using Arch.Core;
+﻿using Arch.Core;
 using Microsoft.Extensions.Logging;
 using Stranne.EcsMemory.Core.Components.Singleton;
 using Stranne.EcsMemory.Core.Components.Tags;
@@ -15,6 +15,9 @@ internal static class FlipUtil
     private static readonly QueryDescription RevealedUnmatchedQuery = new QueryDescription()
         .WithAll<CardId, Revealed>()
         .WithNone<Matched>();
+
+    private static readonly QueryDescription CardByPositionQuery = new QueryDescription()
+        .WithAll<GridPosition, PairKey, CardId>();
 
     public static void TryFlip(World world, GridPosition flipGridPosition, ILogger logger)
     {
@@ -65,11 +68,9 @@ internal static class FlipUtil
 
     private static bool TryGetCardToFlipByGridPosition(World world, GridPosition flipGridPosition, out Entity cardEntity)
     {
-        var cardQuery = new QueryDescription()
-            .WithAll<GridPosition, PairKey, CardId>();
         Entity entity = default;
         var found = false;
-        world.Query(in cardQuery, (Entity innerEntity, ref GridPosition cardGridPosition) =>
+        world.Query(in CardByPositionQuery, (Entity innerEntity, ref GridPosition cardGridPosition) =>
         {
             if (cardGridPosition != flipGridPosition)
                 return;

@@ -5,6 +5,8 @@ using Stranne.EcsMemory.Core.Tests.Common;
 namespace Stranne.EcsMemory.Core.Tests.Extensions;
 internal sealed class WorldSingletonExtensionsTest
 {
+    private static readonly QueryDescription FooQuery = new QueryDescription().WithAll<Foo>();
+
     [Test]
     public async Task GetSingletonRef_ReturnsRef_AllowingInPlaceMutation()
     {
@@ -49,13 +51,12 @@ internal sealed class WorldSingletonExtensionsTest
     {
         using (Assert.Multiple())
         {
-            var query = new QueryDescription().WithAll<Foo>();
-            var numbers = world.CountEntities(query);
+            var numbers = world.CountEntities(in FooQuery);
             await Assert.That(numbers).IsEqualTo(1);
 
             Foo actual = default;
             var found = false;
-            world.Query(in query, (Entity _, ref Foo foo) =>
+            world.Query(in FooQuery, (Entity _, ref Foo foo) =>
             {
                 actual = foo;
                 found = true;
