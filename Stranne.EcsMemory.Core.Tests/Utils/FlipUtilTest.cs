@@ -1,4 +1,4 @@
-﻿using Arch.Core;
+using Arch.Core;
 using Microsoft.Extensions.Logging.Abstractions;
 using Stranne.EcsMemory.Core.Components.Singleton;
 using Stranne.EcsMemory.Core.Components.Tags;
@@ -94,13 +94,8 @@ internal sealed class FlipUtilTest
     public async Task TryFlip_SecondCard_SetsUpPendingEvaluationAndLocksGame()
     {
         using var world = TestWorldFactory.Create();
-        world.CreateCard();
-
-        _ = world.Create(
-            new CardId(1),
-            new PairKey(0),
-            (0, 1),
-            new Revealed());
+        world.CreateCard(pairKey: 0);
+        world.CreateCard(cardId: 1, pairKey: 1, x: 0, y: 1, revealed: true);
 
         FlipUtil.TryFlip(world, GridPosition, Logger);
 
@@ -112,6 +107,28 @@ internal sealed class FlipUtilTest
             await AssertNumberOfRevealed(world, 2);
             await AssertNumberOfPendingEvaluations(world, 1);
             await AssertPendingEvaluationDelayEquals(world, EvalDelayUpdates);
+        }
+    }
+
+    [Test]
+    public async Task TryFlip_SecondCardMatching_ImmediatelyMatchesAndUnlocksGame()
+    {
+        const int pairKey = 5;
+        using var world = TestWorldFactory.Create();
+        world.CreateCard(pairKey: pairKey);
+        world.CreateCard(cardId: 1, pairKey: pairKey, x: 0, y: 1, revealed: true);
+
+        FlipUtil.TryFlip(world, GridPosition, Logger);
+
+        var gameState = world.GetSingletonRef<GameState>();
+        using (Assert.Multiple())
+        {
+            await Assert.That(gameState.IsLocked).IsFalse();
+            await Assert.That(gameState.Moves).IsEqualTo(1);
+            await Assert.That(gameState.MatchedCount).IsEqualTo(2);
+            await AssertNumberOfRevealed(world, 2);
+            await AssertNumberOfMatched(world, 2);
+            await AssertNumberOfPendingEvaluations(world, 0);
         }
     }
 
@@ -140,6 +157,13 @@ internal sealed class FlipUtilTest
         var query = new QueryDescription().WithAll<PendingEvaluation>();
         var pendingCount = world.CountEntities(query);
         await Assert.That(pendingCount).IsEqualTo(expectedPendingEvaluationCount);
+    }
+
+    private static async Task AssertNumberOfMatched(World world, int expectedMatchedCount)
+    {
+        var query = new QueryDescription().WithAll<Matched>();
+        var matchedCount = world.CountEntities(query);
+        await Assert.That(matchedCount).IsEqualTo(expectedMatchedCount);
     }
 
     private static async Task AssertPendingEvaluationDelayEquals(World world, int expected)
