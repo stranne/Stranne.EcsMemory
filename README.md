@@ -6,6 +6,8 @@
 
 This project is an **exploration** of using [Arch ECS](https://arch-ecs.gitbook.io/arch) together with [Godot 4](https://godotengine.org/) (.NET).
 
+*Features: [deterministic gameplay](Stranne.EcsMemory.Core/Utils/BoardSetupUtil.cs), [command pattern](Stranne.EcsMemory.Core/Commands/), [EventBus integration](Stranne.EcsMemory.Core/Events/), [complete state serialization (save/load)](Stranne.EcsMemory.Core/GameCore.cs), and engine-agnostic game logic.*
+
 ## 🕹️ How the game works
 
 - It’s a classic **Memory** game:
