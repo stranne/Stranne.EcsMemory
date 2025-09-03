@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Stranne.EcsMemory.Contracts.Event;
 using Stranne.EcsMemory.Contracts.Snapshots;
 using Stranne.EcsMemory.Core.Commands;
-using Stranne.EcsMemory.Core.Commands.Abstractions;
+using Stranne.EcsMemory.Core.Commands.Base;
 using Stranne.EcsMemory.Core.Components.Singleton;
 using Stranne.EcsMemory.Core.Components.Tags;
 using Stranne.EcsMemory.Core.Components.Value;
@@ -17,25 +17,25 @@ public sealed class GameCore : IDisposable
 {
     internal readonly World World;
     private readonly ISystemManager _systemManager;
-    private readonly ICommandBuffer _commandBuffer;
+    private readonly IGameCommandQueue _commandQueue;
     private readonly IEventManager _eventManager;
 
-    internal GameCore(World world, ISystemManager systemManager, ICommandBuffer commandBuffer, IEventManager eventManager)
+    internal GameCore(World world, ISystemManager systemManager, IGameCommandQueue commandQueue, IEventManager eventManager)
     {
         World = world;
         _systemManager = systemManager;
-        _commandBuffer = commandBuffer;
+        _commandQueue = commandQueue;
         _eventManager = eventManager;
     }
 
     private static GameCore Create(World world, IGameEvents gameEvents, ILoggerFactory loggerFactory)
     {
         RegisterComponents();
-        var commandBuffer = new CommandBuffer();
-        var systemManager = new SystemManager(world, commandBuffer, loggerFactory);
+        var commandQueue = new GameCommandQueue(loggerFactory.CreateLogger<GameCommandQueue>());
+        var systemManager = new SystemManager(world, commandQueue, loggerFactory);
         var eventManager = new EventManager(gameEvents);
 
-        return new GameCore(world, systemManager, commandBuffer, eventManager);
+        return new GameCore(world, systemManager, commandQueue, eventManager);
     }
 
     public static GameCore Create(IGameEvents gameEvents, ILoggerFactory loggerFactory) =>
@@ -45,10 +45,10 @@ public sealed class GameCore : IDisposable
         Create(Deserialize(json), gameEvents, loggerFactory);
 
     public void StartNewGame(int columns, int rows, int seed) =>
-        _commandBuffer.Enqueue(new StartNewGame(columns, rows, seed));
+        _commandQueue.ProcessCommand(new StartNewGame(columns, rows, seed), World);
 
     public void FlipCardAt(int x, int y) =>
-        _commandBuffer.Enqueue(new FlipCardAt(x, y));
+        _commandQueue.ProcessCommand(new FlipCardAt(x, y), World);
 
     public void Update(float deltaTime)
     {

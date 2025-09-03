@@ -1,9 +1,10 @@
-﻿using Arch.Core;
+using Arch.Core;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using Stranne.EcsMemory.Contracts.Event;
 using Stranne.EcsMemory.Core.Commands;
-using Stranne.EcsMemory.Core.Commands.Abstractions;
+using Stranne.EcsMemory.Core.Commands.Base;
 using Stranne.EcsMemory.Core.Components.Value;
 using Stranne.EcsMemory.Core.Events;
 using Stranne.EcsMemory.Core.Systems;
@@ -16,23 +17,19 @@ internal sealed class GameCoreTest
     private static readonly QueryDescription CardIdQuery = new QueryDescription().WithAll<CardId>();
 
     [Test]
-    public async Task GameCore_StartNewGame_EnqueuesSingleCommandWithCorrectValues()
+    public async Task GameCore_StartNewGame_ProcessedImmediately()
     {
         using var world = TestWorldFactory.Create();
-        var commandBuffer = new CommandBuffer();
-        using var sut = new GameCore(world, Substitute.For<ISystemManager>(), commandBuffer, Substitute.For<IEventManager>());
+        var commandQueue = new GameCommandQueue(NullLogger<GameCommandQueue>.Instance);
+        using var sut = new GameCore(world, Substitute.For<ISystemManager>(), commandQueue, Substitute.For<IEventManager>());
 
-        sut.StartNewGame(1, 2, 3);
+        sut.StartNewGame(2, 2, 3);
 
         using (Assert.Multiple())
         {
-            await Assert.That(commandBuffer.TryDequeue(out var command)).IsTrue();
-            await Assert.That(command).IsTypeOf<StartNewGame>();
-            var startNewGameCommand = (StartNewGame?)command;
-            await Assert.That(startNewGameCommand?.Columns).IsEqualTo(1);
-            await Assert.That(startNewGameCommand?.Rows).IsEqualTo(2);
-            await Assert.That(startNewGameCommand?.Seed).IsEqualTo(3);
-            await Assert.That(commandBuffer.TryDequeue(out _)).IsFalse();
+            await Assert.That(commandQueue.TryDequeue(out _)).IsFalse();
+            // Verify the game was actually started by checking for cards created
+            await Assert.That(world.CountEntities(in CardIdQuery)).IsEqualTo(4);
         }
     }
 
@@ -40,19 +37,19 @@ internal sealed class GameCoreTest
     public async Task GameCore_FlipCardAt_EnqueuesSingleCommandWithCorrectValues()
     {
         using var world = TestWorldFactory.Create();
-        var commandBuffer = new CommandBuffer();
-        using var sut = new GameCore(world, Substitute.For<ISystemManager>(), commandBuffer, Substitute.For<IEventManager>());
+        var commandQueue = new GameCommandQueue(NullLogger<GameCommandQueue>.Instance);
+        using var sut = new GameCore(world, Substitute.For<ISystemManager>(), commandQueue, Substitute.For<IEventManager>());
 
         sut.FlipCardAt(1, 2);
 
         using (Assert.Multiple())
         {
-            await Assert.That(commandBuffer.TryDequeue(out var command)).IsTrue();
+            await Assert.That(commandQueue.TryDequeue(out var command)).IsTrue();
             await Assert.That(command).IsTypeOf<FlipCardAt>();
             var flipCardAt = (FlipCardAt?)command;
             await Assert.That(flipCardAt?.X).IsEqualTo(1);
             await Assert.That(flipCardAt?.Y).IsEqualTo(2);
-            await Assert.That(commandBuffer.TryDequeue(out _)).IsFalse();
+            await Assert.That(commandQueue.TryDequeue(out _)).IsFalse();
         }
     }
 
