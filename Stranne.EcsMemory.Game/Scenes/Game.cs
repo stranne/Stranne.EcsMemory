@@ -4,6 +4,7 @@ using Godot;
 using Godot.Collections;
 using Microsoft.Extensions.Logging;
 using Stranne.EcsMemory.Adapter;
+using Stranne.EcsMemory.Contracts;
 using Stranne.EcsMemory.Contracts.Event;
 using Stranne.EcsMemory.Contracts.Snapshots;
 using Stranne.EcsMemory.Game.Utils;
@@ -18,6 +19,10 @@ public sealed partial class Game : Control, IGameEvents
     [Export] private int _columns = 5;
     [Export] private int _rows = 4;
     [Export] private int _seed = 0;
+    /// <summary>
+    /// Number of update cycles to wait before evaluating matches. Higher values give more time to see both cards.
+    /// </summary>
+    [Export] private int _evaluationDelayUpdates = 30;
     [Export] private int _minCardSize = 96;
 
     private GridContainer _grid = null!;
@@ -26,18 +31,20 @@ public sealed partial class Game : Control, IGameEvents
 
     public Game()
     {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_columns);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_rows);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_evaluationDelayUpdates);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_minCardSize);
+
         var seed = _seed == 0 
             ? null as int?
             : _seed;
-        _gameAdapter = GameAdapter.LoadOrCreateNewGame(_columns, _rows, seed, this,
-            GodotLoggerFactory.Instance);
+        var gameConfiguration = new GameConfiguration(_evaluationDelayUpdates);
+        _gameAdapter = GameAdapter.LoadOrCreateNewGame(_columns, _rows, seed, gameConfiguration, this, GodotLoggerFactory.Instance);
     }
 
     public override void _Ready()
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_columns);
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(_rows);
-
         _grid = GetNode<GridContainer>("%CardGrid");
         _movesLabel = GetNode<Label>("%MovesLabel");
         _newGameButton = GetNode<Button>("%NewGameButton");

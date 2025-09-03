@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Stranne.EcsMemory.Contracts;
 using Stranne.EcsMemory.Contracts.Event;
 using Stranne.EcsMemory.Contracts.Snapshots;
 using Stranne.EcsMemory.Core;
@@ -16,10 +17,10 @@ public sealed class GameAdapter : IDisposable
     private GameAdapter(GameCore gameCore) =>
         _gameCore = gameCore;
 
-    public static GameAdapter LoadOrCreateNewGame(int columns, int rows, int? seed, IGameEvents gameEvents, ILoggerFactory? loggerFactory = null)
+    public static GameAdapter LoadOrCreateNewGame(int columns, int rows, int? seed, GameConfiguration gameConfiguration, IGameEvents gameEvents, ILoggerFactory? loggerFactory = null)
     {
         loggerFactory ??= NullLoggerFactory.Instance;
-        return new GameAdapter(LoadGame(columns, rows, seed, gameEvents, loggerFactory));
+        return new GameAdapter(LoadGame(columns, rows, seed, gameConfiguration, gameEvents, loggerFactory));
     }
 
     public bool HasSnapshotChanged() =>
@@ -50,17 +51,17 @@ public sealed class GameAdapter : IDisposable
     public void SaveGame() => 
         File.WriteAllText(SaveFileName, _gameCore.Serialize());
 
-    private static GameCore LoadGame(int columns, int rows, int? seed, IGameEvents gameEvents, ILoggerFactory loggerFactory)
+    private static GameCore LoadGame(int columns, int rows, int? seed, GameConfiguration gameConfiguration, IGameEvents gameEvents, ILoggerFactory loggerFactory)
     {
         if (!File.Exists(SaveFileName))
         {
-            var gameCore = GameCore.Create(gameEvents, loggerFactory);
+            var gameCore = GameCore.Create(gameConfiguration, gameEvents, loggerFactory);
             gameCore.StartNewGame(columns, rows, seed ?? Random.Shared.Next());
             return gameCore;
         }
 
         var text = File.ReadAllText(SaveFileName);
-        return GameCore.Create(gameEvents, loggerFactory, text);
+        return GameCore.Create(gameConfiguration, gameEvents, loggerFactory, text);
     }
 
     public void Dispose() =>

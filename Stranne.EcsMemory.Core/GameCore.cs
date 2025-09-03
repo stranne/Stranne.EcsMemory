@@ -2,6 +2,7 @@
 using Arch.Core.Utils;
 using Arch.Persistence;
 using Microsoft.Extensions.Logging;
+using Stranne.EcsMemory.Contracts;
 using Stranne.EcsMemory.Contracts.Event;
 using Stranne.EcsMemory.Contracts.Snapshots;
 using Stranne.EcsMemory.Core.Commands;
@@ -28,21 +29,21 @@ public sealed class GameCore : IDisposable
         _eventManager = eventManager;
     }
 
-    private static GameCore Create(World world, IGameEvents gameEvents, ILoggerFactory loggerFactory)
+    private static GameCore Create(World world, GameConfiguration gameConfiguration, IGameEvents gameEvents, ILoggerFactory loggerFactory)
     {
         RegisterComponents();
-        var commandQueue = new GameCommandQueue(loggerFactory.CreateLogger<GameCommandQueue>());
+        var commandQueue = new GameCommandQueue(gameConfiguration, loggerFactory.CreateLogger<GameCommandQueue>());
         var systemManager = new SystemManager(world, commandQueue, loggerFactory);
         var eventManager = new EventManager(gameEvents);
 
         return new GameCore(world, systemManager, commandQueue, eventManager);
     }
 
-    public static GameCore Create(IGameEvents gameEvents, ILoggerFactory loggerFactory) =>
-        Create(World.Create(), gameEvents, loggerFactory);
+    public static GameCore Create(GameConfiguration gameConfiguration, IGameEvents gameEvents, ILoggerFactory loggerFactory) =>
+        Create(World.Create(), gameConfiguration, gameEvents, loggerFactory);
 
-    public static GameCore Create(IGameEvents gameEvents, ILoggerFactory loggerFactory, string json) =>
-        Create(Deserialize(json), gameEvents, loggerFactory);
+    public static GameCore Create(GameConfiguration gameConfiguration, IGameEvents gameEvents, ILoggerFactory loggerFactory, string json) =>
+        Create(Deserialize(json), gameConfiguration, gameEvents, loggerFactory);
 
     public void StartNewGame(int columns, int rows, int seed) =>
         _commandQueue.ProcessCommand(new StartNewGame(columns, rows, seed), World);

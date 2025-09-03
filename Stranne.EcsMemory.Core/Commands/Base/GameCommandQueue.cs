@@ -1,9 +1,10 @@
 using Arch.Core;
 using Microsoft.Extensions.Logging;
+using Stranne.EcsMemory.Contracts;
 using Stranne.EcsMemory.Core.Commands.Handlers;
 
 namespace Stranne.EcsMemory.Core.Commands.Base;
-internal class GameCommandQueue(ILogger<GameCommandQueue> logger) : IGameCommandQueue
+internal class GameCommandQueue(GameConfiguration gameConfiguration, ILogger<GameCommandQueue> logger) : IGameCommandQueue
 {
     private const int MaxBoardDimension = 10;
     private readonly Queue<GameCommand> _buffer = new();
@@ -52,7 +53,7 @@ internal class GameCommandQueue(ILogger<GameCommandQueue> logger) : IGameCommand
         {
             var result = command switch
             {
-                StartNewGame startNewGame => StartNewGameHandler.Execute(startNewGame, world),
+                StartNewGame startNewGame => StartNewGameHandler.Execute(startNewGame, world, gameConfiguration),
                 FlipCardAt flipCardAt => FlipCardAtHandler.Execute(flipCardAt, world, logger),
                 _ => CommandResult.Failed
             };
