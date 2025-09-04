@@ -2,6 +2,7 @@ using Arch.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
+using Stranne.EcsMemory.Contracts;
 using Stranne.EcsMemory.Contracts.Event;
 using Stranne.EcsMemory.Core.Commands;
 using Stranne.EcsMemory.Core.Commands.Base;
@@ -14,13 +15,14 @@ namespace Stranne.EcsMemory.Core.Tests;
 [NotInParallel]
 internal sealed class GameCoreTest
 {
+    private static readonly GameConfiguration DefaultConfig = new();
     private static readonly QueryDescription CardIdQuery = new QueryDescription().WithAll<CardId>();
 
     [Test]
     public async Task GameCore_StartNewGame_ProcessedImmediately()
     {
         using var world = TestWorldFactory.Create();
-        var commandQueue = new GameCommandQueue(NullLogger<GameCommandQueue>.Instance);
+        var commandQueue = new GameCommandQueue(DefaultConfig, NullLogger<GameCommandQueue>.Instance);
         using var sut = new GameCore(world, Substitute.For<ISystemManager>(), commandQueue, Substitute.For<IEventManager>());
 
         sut.StartNewGame(2, 2, 3);
@@ -37,7 +39,7 @@ internal sealed class GameCoreTest
     public async Task GameCore_FlipCardAt_EnqueuesSingleCommandWithCorrectValues()
     {
         using var world = TestWorldFactory.Create();
-        var commandQueue = new GameCommandQueue(NullLogger<GameCommandQueue>.Instance);
+        var commandQueue = new GameCommandQueue(DefaultConfig, NullLogger<GameCommandQueue>.Instance);
         using var sut = new GameCore(world, Substitute.For<ISystemManager>(), commandQueue, Substitute.For<IEventManager>());
 
         sut.FlipCardAt(1, 2);
@@ -56,14 +58,14 @@ internal sealed class GameCoreTest
     [Test]
     public async Task GameCore_Serialize_EnsureWorldCanBeSavedAndLoaded()
     {
-        using var sut = GameCore.Create(Substitute.For<IGameEvents>(), Substitute.For<ILoggerFactory>());
+        using var sut = GameCore.Create(DefaultConfig, Substitute.For<IGameEvents>(), Substitute.For<ILoggerFactory>());
         sut.StartNewGame(4, 3, 1);
         sut.Update(7);
         sut.Update(39);
         sut.Update(3);
 
         var actualSerializeData = sut.Serialize();
-        var actualGameCore = GameCore.Create(Substitute.For<IGameEvents>(), Substitute.For<ILoggerFactory>(), actualSerializeData);
+        var actualGameCore = GameCore.Create(DefaultConfig, Substitute.For<IGameEvents>(), Substitute.For<ILoggerFactory>(), actualSerializeData);
 
         using (Assert.Multiple())
         {

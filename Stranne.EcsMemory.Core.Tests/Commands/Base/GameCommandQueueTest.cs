@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using Stranne.EcsMemory.Core.Commands;
 using Stranne.EcsMemory.Core.Commands.Base;
 
-namespace Stranne.EcsMemory.Core.Tests;
+namespace Stranne.EcsMemory.Core.Tests.Commands.Base;
 internal sealed class GameCommandQueueTest
 {
     [Test]
