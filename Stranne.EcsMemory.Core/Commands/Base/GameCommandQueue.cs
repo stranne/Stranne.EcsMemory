@@ -58,10 +58,18 @@ internal class GameCommandQueue(GameConfiguration gameConfiguration, ILogger<Gam
                 _ => CommandResult.Failed
             };
             
-            if (result == CommandResult.Success)
-                logger.LogDebug("Command executed successfully: {CommandType}", commandType);
-            else
-                logger.LogWarning("Command execution failed: {CommandType}", commandType);
+            switch (result)
+            {
+                case CommandResult.Success:
+                    logger.LogDebug("Command executed successfully: {CommandType}", commandType);
+                    break;
+                case CommandResult.Skipped:
+                    logger.LogDebug("Command skipped: {CommandType}", commandType);
+                    break;
+                case CommandResult.Failed:
+                    logger.LogWarning("Command execution failed: {CommandType}", commandType);
+                    break;
+            }
             
             return result;
         }

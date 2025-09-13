@@ -10,7 +10,6 @@ internal static class FlipCardAtHandler
     internal static CommandResult Execute(FlipCardAt command, World world, ILogger logger)
     {
         var gridPosition = new GridPosition(command.X, command.Y);
-        FlipUtil.TryFlip(world, gridPosition, logger);
-        return CommandResult.Success;
+        return FlipUtil.TryFlip(world, gridPosition, logger);
     }
 }

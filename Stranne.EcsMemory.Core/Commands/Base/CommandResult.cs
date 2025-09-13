@@ -6,5 +6,6 @@ internal enum CommandResult
 {
     Success,
     Failed,
+    Skipped,
     Deferred
 }

@@ -1,5 +1,6 @@
 ﻿using Arch.Core;
 using Microsoft.Extensions.Logging;
+using Stranne.EcsMemory.Core.Commands.Base;
 using Stranne.EcsMemory.Core.Components.Singleton;
 using Stranne.EcsMemory.Core.Components.Tags;
 using Stranne.EcsMemory.Core.Components.Value;
@@ -16,26 +17,26 @@ internal static class FlipUtil
     private static readonly QueryDescription CardByPositionQuery = new QueryDescription()
         .WithAll<GridPosition, PairKey, CardId>();
 
-    public static void TryFlip(World world, GridPosition flipGridPosition, ILogger logger)
+    public static CommandResult TryFlip(World world, GridPosition flipGridPosition, ILogger logger)
     {
         ref var gameState = ref world.GetSingletonRef<GameState>();
 
         if (gameState.IsLocked)
-            return;
+            return CommandResult.Skipped;
 
         var found = TryGetCardToFlipByGridPosition(world, flipGridPosition, out var cardEntity);
 
         if (!found)
         {
             logger.LogWarning("Tried to flip at {GridPosition}, but no card was found.", flipGridPosition);
-            return;
+            return CommandResult.Skipped;
         }
 
         if (world.Has<Matched>(cardEntity))
-            return;
+            return CommandResult.Skipped;
 
         if (world.Has<Revealed>(cardEntity))
-            return;
+            return CommandResult.Skipped;
 
         var isFirstFlipped = !world.TryGetFirst(FlippedButNotMatchedQuery, out _);
 
@@ -53,7 +54,7 @@ internal static class FlipUtil
 
             // Check if the two revealed cards match - if so, skip pending evaluation
             if (MatchEvaluationUtil.TryHandleImmediateMatch(world, logger))
-                return;
+                return CommandResult.Success;
 
             // No immediate match - proceed with delayed evaluation
             var config = world.GetSingletonRef<Config>();
@@ -61,6 +62,8 @@ internal static class FlipUtil
 
             logger.LogDebug("Flipped second card at {GridPosition}, evaluation pending.", flipGridPosition);
         }
+
+        return CommandResult.Success;
     }
 
     private static bool TryGetCardToFlipByGridPosition(World world, GridPosition flipGridPosition, out Entity cardEntity)
