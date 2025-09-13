@@ -11,7 +11,14 @@ internal sealed class GameCommandSystem(World world, IGameCommandQueue buffer, I
     {
         while (buffer.TryDequeue(out var command))
         {
-            buffer.ExecuteCommand(command, World);
+            try
+            {
+                buffer.ExecuteCommand(command, World);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Unexpected error executing command: {CommandType}", command.GetType().Name);
+            }
         }
     }
 }
