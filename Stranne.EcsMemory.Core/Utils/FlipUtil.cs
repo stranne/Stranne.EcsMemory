@@ -12,9 +12,6 @@ internal static class FlipUtil
         .WithAll<Revealed>()
         .WithNone<Matched>();
 
-    private static readonly QueryDescription RevealedUnmatchedQuery = new QueryDescription()
-        .WithAll<CardId, Revealed>()
-        .WithNone<Matched>();
 
     private static readonly QueryDescription CardByPositionQuery = new QueryDescription()
         .WithAll<GridPosition, PairKey, CardId>();
@@ -55,7 +52,7 @@ internal static class FlipUtil
             gameState.IsLocked = true;
 
             // Check if the two revealed cards match - if so, skip pending evaluation
-            if (TryHandleImmediateMatch(world, flipGridPosition, logger))
+            if (MatchEvaluationUtil.TryHandleImmediateMatch(world, logger))
                 return;
 
             // No immediate match - proceed with delayed evaluation
@@ -83,51 +80,4 @@ internal static class FlipUtil
         return found;
     }
 
-    private static bool TryGetTwoRevealedUnmatched(World world, out Entity entity1, out Entity entity2)
-    {
-        var candidates = new List<(Entity entity, int cardId)>();
-
-        world.Query(in RevealedUnmatchedQuery, (Entity currentEntity, ref CardId cardId) => 
-            candidates.Add((currentEntity, cardId.Value)));
-
-        if (candidates.Count < 2)
-        {
-            entity1 = default;
-            entity2 = default;
-            return false;
-        }
-
-        candidates.Sort((a, b) => a.cardId.CompareTo(b.cardId));
-        entity1 = candidates[0].entity;
-        entity2 = candidates[1].entity;
-        return true;
-    }
-
-    private static bool TryHandleImmediateMatch(World world, GridPosition flipGridPosition, ILogger logger)
-    {
-        if (!TryGetTwoRevealedUnmatched(world, out var firstEntity, out var secondEntity))
-            return false;
-
-        var pairKeyA = world.Get<PairKey>(firstEntity);
-        var pairKeyB = world.Get<PairKey>(secondEntity);
-
-        if (pairKeyA != pairKeyB)
-            return false;
-
-        world.Add<Matched>(firstEntity);
-        world.Add<Matched>(secondEntity);
-
-        ref var gameState = ref world.GetSingletonRef<GameState>();
-        gameState.MatchedCount += 2;
-        gameState.Moves++;
-        gameState.IsLocked = false;
-
-        world.IncrementStateVersion();
-        world.MarkChanged(firstEntity, secondEntity);
-
-        logger.LogDebug("Flipped second card at {GridPosition}, match found: pair {PairKey} ({MatchedCount}/{TotalCards})", 
-            pairKeyA.Value, flipGridPosition, gameState.MatchedCount, gameState.TotalCards);
-
-        return true;
-    }
 }

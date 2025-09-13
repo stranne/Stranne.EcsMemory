@@ -5,13 +5,13 @@ using Stranne.EcsMemory.Core.Components.Singleton;
 using Stranne.EcsMemory.Core.Components.Tags;
 using Stranne.EcsMemory.Core.Components.Value;
 using Stranne.EcsMemory.Core.Extensions;
+using Stranne.EcsMemory.Core.Utils;
 
 namespace Stranne.EcsMemory.Core.Systems;
 internal sealed class MatchedSystem(World world, ILogger<MatchedSystem> logger)
     : BaseSystem<World, float>(world)
 {
     internal static readonly QueryDescription PendingEvaluationQuery = new QueryDescription().WithAll<PendingEvaluation>();
-    internal static readonly QueryDescription RevealedUnmatchedQuery = new QueryDescription().WithAll<CardId, Revealed>().WithNone<Matched>();
 
     public override void Update(in float _)
     {
@@ -24,29 +24,10 @@ internal sealed class MatchedSystem(World world, ILogger<MatchedSystem> logger)
         if (pendingEvaluation.UpdatesLeft > 0)
             return;
 
-        if (TryGetTwoRevealedUnmatched(out var firstEntity, out var secondEntity))
+        if (MatchEvaluationUtil.TryGetTwoRevealedUnmatched(World, out var firstEntity, out var secondEntity))
         {
-            var pairKeyA = World.Get<PairKey>(firstEntity);
-            var pairKeyB = World.Get<PairKey>(secondEntity);
-
-            if (pairKeyA == pairKeyB)
-            {
-                World.Add<Matched>(firstEntity);
-                World.Add<Matched>(secondEntity);
-
-                ref var gameState = ref World.GetSingletonRef<GameState>();
-                gameState.MatchedCount += 2;
-                logger.LogDebug("Match found: pair {PairKey} ({MatchedCount}/{TotalCards})", pairKeyA.Value, gameState.MatchedCount, gameState.TotalCards);
-            }
-            else
-            {
-                World.Remove<Revealed>(firstEntity);
-                World.Remove<Revealed>(secondEntity);
-                logger.LogDebug("No match: {PairKeyA} != {PairKeyB}", pairKeyA.Value, pairKeyB.Value);
-            }
-
-            World.IncrementStateVersion();
-            World.MarkChanged(firstEntity, secondEntity);
+            var isMatch = MatchEvaluationUtil.DoesMatch(World, firstEntity, secondEntity);
+            MatchEvaluationUtil.ApplyMatchResult(World, firstEntity, secondEntity, isMatch, logger);
         }
 
         ResetTurn();
@@ -69,26 +50,6 @@ internal sealed class MatchedSystem(World world, ILogger<MatchedSystem> logger)
 
         entity = outerEntity;
         return found;
-    }
-
-    private bool TryGetTwoRevealedUnmatched(out Entity entity1, out Entity entity2)
-    {
-        var candidates = new List<(Entity entity, int cardId)>();
-
-        World.Query(in RevealedUnmatchedQuery, (Entity currentEntity, ref CardId cardId) => 
-            candidates.Add((currentEntity, cardId.Value)));
-
-        if (candidates.Count < 2)
-        {
-            entity1 = default;
-            entity2 = default;
-            return false;
-        }
-
-        candidates.Sort((a, b) => a.cardId.CompareTo(b.cardId));
-        entity1 = candidates[0].entity;
-        entity2 = candidates[1].entity;
-        return true;
     }
 
     private void ResetTurn()
