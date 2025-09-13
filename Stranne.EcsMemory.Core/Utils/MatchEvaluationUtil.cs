@@ -15,21 +15,50 @@ internal static class MatchEvaluationUtil
 
     public static bool TryGetTwoRevealedUnmatched(World world, out Entity entity1, out Entity entity2)
     {
-        var candidates = new List<(Entity entity, int cardId)>();
+        Entity firstEntity = default;
+        Entity secondEntity = default;
+        int firstCardId = int.MaxValue;
+        int secondCardId = int.MaxValue;
+        int foundCount = 0;
 
-        world.Query(in RevealedUnmatchedQuery, (Entity currentEntity, ref CardId cardId) => 
-            candidates.Add((currentEntity, cardId.Value)));
+        world.Query(in RevealedUnmatchedQuery, (Entity currentEntity, ref CardId cardId) =>
+        {
+            var currentCardId = cardId.Value;
 
-        if (candidates.Count < 2)
+            if (foundCount == 0)
+            {
+                firstEntity = currentEntity;
+                firstCardId = currentCardId;
+                foundCount++;
+                return;
+            }
+
+            if (currentCardId < firstCardId)
+            {
+                secondEntity = firstEntity;
+                secondCardId = firstCardId;
+                firstEntity = currentEntity;
+                firstCardId = currentCardId;
+            }
+            else if (currentCardId < secondCardId)
+            {
+                secondEntity = currentEntity;
+                secondCardId = currentCardId;
+            }
+
+            if (foundCount == 1)
+                foundCount++;
+        });
+
+        if (foundCount < 2)
         {
             entity1 = default;
             entity2 = default;
             return false;
         }
 
-        candidates.Sort((a, b) => a.cardId.CompareTo(b.cardId));
-        entity1 = candidates[0].entity;
-        entity2 = candidates[1].entity;
+        entity1 = firstEntity;
+        entity2 = secondEntity;
         return true;
     }
 
@@ -37,7 +66,7 @@ internal static class MatchEvaluationUtil
     {
         if (!world.Has<PairKey>(entity1) || !world.Has<PairKey>(entity2))
             return false;
-            
+
         var pairKeyA = world.Get<PairKey>(entity1);
         var pairKeyB = world.Get<PairKey>(entity2);
         return pairKeyA == pairKeyB;

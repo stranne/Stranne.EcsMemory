@@ -11,6 +11,8 @@ internal sealed class RenderSystem(World world)
     : BaseSystem<World, float>(world)
 {
     private uint _lastStateVersion;
+    private List<CardSnapshot> _cachedCards = [];
+    private int _lastTotalCards = -1;
 
     private static readonly QueryDescription CardsQuery = new QueryDescription().WithAll<CardId, GridPosition, LastChangedStateVersion>();
 
@@ -36,7 +38,13 @@ internal sealed class RenderSystem(World world)
         if (_lastStateVersion == gameState.StateVersion)
             return;
 
-        var cards = new List<CardSnapshot>(gameState.TotalCards);
+        if (_lastTotalCards != gameState.TotalCards)
+        {
+            _cachedCards.Capacity = gameState.TotalCards;
+            _lastTotalCards = gameState.TotalCards;
+        }
+
+        _cachedCards.Clear();
 
         World.Query(in CardsQuery, (Entity entity, ref CardId cardId, ref GridPosition gridPosition, ref LastChangedStateVersion lastChangedStateVersion) =>
         {
@@ -46,7 +54,7 @@ internal sealed class RenderSystem(World world)
                 ? World.Get<PairKey>(entity).Value
                 : (int?)null;
 
-            cards.Add(new CardSnapshot
+            _cachedCards.Add(new CardSnapshot
             {
                 Id = cardId.Value,
                 X = gridPosition.X,
@@ -57,12 +65,12 @@ internal sealed class RenderSystem(World world)
                 StateVersion = lastChangedStateVersion.StateVersion
             });
         });
-        cards.Sort((a, b) => a.Y != b.Y ? a.Y.CompareTo(b.Y) : a.X.CompareTo(b.X));
+        _cachedCards.Sort((a, b) => a.Y != b.Y ? a.Y.CompareTo(b.Y) : a.X.CompareTo(b.X));
 
         var config = World.GetSingletonRef<Config>();
         GameSnapshot = new GameSnapshot
         {
-            Cards = cards,
+            Cards = _cachedCards,
             Rows = config.Rows,
             Columns = config.Columns,
             TotalCards = gameState.TotalCards,
