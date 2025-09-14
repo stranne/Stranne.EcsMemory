@@ -76,7 +76,8 @@ internal static class MatchEvaluationUtil
     {
         if (isMatch)
         {
-            // Synchronize state versions BEFORE adding Matched tags to avoid Arch ECS bug
+            // Set LastChangedStateVersion BEFORE adding Matched tags (Arch ECS 2.0.0 workaround)
+            // See WorldChangeTrackingExtensions.MarkChanged() for detailed bug documentation
             ref var gameState = ref world.GetSingletonRef<GameState>();
             var currentStateVersion = new LastChangedStateVersion(gameState.StateVersion);
             world.Set(entity1, currentStateVersion);
