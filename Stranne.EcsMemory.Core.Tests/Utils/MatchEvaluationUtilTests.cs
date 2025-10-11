@@ -11,9 +11,9 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 namespace Stranne.EcsMemory.Core.Tests.Utils;
 
 [NotInParallel]
-internal sealed class MatchEvaluationUtilTest
+internal sealed class MatchEvaluationUtilTests
 {
-    private static readonly ILogger Logger = new NullLoggerFactory().CreateLogger(nameof(MatchEvaluationUtilTest));
+    private static readonly ILogger Logger = new NullLoggerFactory().CreateLogger(nameof(MatchEvaluationUtilTests));
 
     [Test]
     public async Task TryGetTwoRevealedUnmatched_NoRevealedCards_ReturnsFalse()

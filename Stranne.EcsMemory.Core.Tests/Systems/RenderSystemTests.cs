@@ -3,7 +3,7 @@ using Stranne.EcsMemory.Core.Tests.Common;
 
 namespace Stranne.EcsMemory.Core.Tests.Systems;
 [NotInParallel]
-internal sealed class RenderSystemTest
+internal sealed class RenderSystemTests
 {
     [Test]
     public async Task RenderQuery_SortsDeterministically()
@@ -31,7 +31,7 @@ internal sealed class RenderSystemTest
 
     [Test]
     [MatrixDataSource]
-    public async Task RenderQuery_ProjectsFlags(bool isLocked, bool isWon, [MatrixMethod<RenderSystemTest>(nameof(Moves))] int moves)
+    public async Task RenderQuery_ProjectsFlags(bool isLocked, bool isWon, [MatrixMethod<RenderSystemTests>(nameof(Moves))] int moves)
     {
         using var world = TestWorldFactory.Create(isLocked: isLocked, isWon: isWon, moves: moves);
         using var sut = new RenderSystem(world);

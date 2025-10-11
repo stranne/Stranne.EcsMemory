@@ -10,12 +10,12 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Stranne.EcsMemory.Core.Tests.Utils;
 [NotInParallel]
-internal sealed class FlipUtilTest
+internal sealed class FlipUtilTests
 {
     private const int EvalDelayUpdates = 10;
 
     private static readonly GridPosition GridPosition = new(0, 0);
-    private static readonly ILogger Logger = new NullLoggerFactory().CreateLogger(nameof(FlipUtilTest));
+    private static readonly ILogger Logger = new NullLoggerFactory().CreateLogger(nameof(FlipUtilTests));
 
     private static readonly QueryDescription RevealedQuery = new QueryDescription().WithAll<Revealed>();
     private static readonly QueryDescription PendingEvaluationQuery = new QueryDescription().WithAll<PendingEvaluation>();

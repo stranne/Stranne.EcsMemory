@@ -3,7 +3,7 @@ using Stranne.EcsMemory.Core.Extensions;
 using Stranne.EcsMemory.Core.Tests.Common;
 
 namespace Stranne.EcsMemory.Core.Tests.Extensions;
-internal sealed class WorldChangeTrackingExtensionsTest
+internal sealed class WorldChangeTrackingExtensionsTests
 {
     [Test]
     public async Task MarkChanged_SingleEntity_SetsLastChangedStateVersionToCurrentGameState()

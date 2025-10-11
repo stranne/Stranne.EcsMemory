@@ -3,7 +3,7 @@ using Stranne.EcsMemory.Core.Commands;
 using Stranne.EcsMemory.Core.Commands.Base;
 
 namespace Stranne.EcsMemory.Core.Tests.Commands.Base;
-internal sealed class GameCommandQueueTest
+internal sealed class GameCommandQueueTests
 {
     [Test]
     [Arguments(0, 0, true, "ValidCoordinates_Zero")]

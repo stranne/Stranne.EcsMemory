@@ -13,7 +13,7 @@ using Stranne.EcsMemory.Core.Tests.Common;
 
 namespace Stranne.EcsMemory.Core.Tests;
 [NotInParallel]
-internal sealed class GameCoreTest
+internal sealed class GameCoreTests
 {
     private static readonly GameConfiguration DefaultConfig = new();
     private static readonly QueryDescription CardIdQuery = new QueryDescription().WithAll<CardId>();

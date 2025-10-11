@@ -9,7 +9,7 @@ using Stranne.EcsMemory.Core.Tests.Common;
 
 namespace Stranne.EcsMemory.Core.Tests.Systems;
 [NotInParallel]
-internal sealed class WinCheckSystemTest
+internal sealed class WinCheckSystemTests
 {
     private static readonly ILogger<WinCheckSystem> Logger = new NullLogger<WinCheckSystem>();
 

@@ -8,7 +8,7 @@ using Stranne.EcsMemory.Core.Tests.Common;
 
 namespace Stranne.EcsMemory.Core.Tests.Systems;
 [NotInParallel]
-internal sealed class MatchedSystemTest
+internal sealed class MatchedSystemTests
 {
     private static readonly ILogger<MatchedSystem> Logger = new NullLogger<MatchedSystem>();
 

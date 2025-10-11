@@ -3,7 +3,7 @@ using Stranne.EcsMemory.Core.Extensions;
 using Stranne.EcsMemory.Core.Tests.Common;
 
 namespace Stranne.EcsMemory.Core.Tests.Extensions;
-internal sealed class WorldStateExtensionsTest
+internal sealed class WorldStateExtensionsTests
 {
     [Test]
     [Arguments(0, 1)]

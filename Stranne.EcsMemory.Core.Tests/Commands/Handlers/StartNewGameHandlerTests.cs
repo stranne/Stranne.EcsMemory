@@ -10,7 +10,7 @@ using Stranne.EcsMemory.Core.Tests.Common;
 
 namespace Stranne.EcsMemory.Core.Tests.Commands.Handlers;
 [NotInParallel]
-internal sealed class StartNewGameHandlerTest
+internal sealed class StartNewGameHandlerTests
 {
     private static readonly GameConfiguration DefaultConfig = new() { EvaluationDelayUpdates = 30 };
 

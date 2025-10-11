@@ -11,9 +11,9 @@ using Stranne.EcsMemory.Core.Tests.Common;
 
 namespace Stranne.EcsMemory.Core.Tests.Commands.Handlers;
 [NotInParallel]
-internal sealed class FlipCardAtHandlerTest
+internal sealed class FlipCardAtHandlerTests
 {
-    private static readonly ILogger Logger = new NullLogger<FlipCardAtHandlerTest>();
+    private static readonly ILogger Logger = new NullLogger<FlipCardAtHandlerTests>();
 
     [Test]
     public async Task Execute_ValidCardPosition_ReturnsSuccess()

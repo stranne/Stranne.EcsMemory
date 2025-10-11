@@ -9,7 +9,7 @@ using Stranne.EcsMemory.Core.Tests.Common;
 
 namespace Stranne.EcsMemory.Core.Tests.Systems;
 [NotInParallel]
-internal sealed class GameCommandSystemTest
+internal sealed class GameCommandSystemTests
 {
     private static readonly ILogger<GameCommandSystem> Logger = new NullLogger<GameCommandSystem>();
 

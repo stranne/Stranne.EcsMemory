@@ -3,7 +3,7 @@ using Stranne.EcsMemory.Core.Extensions;
 using Stranne.EcsMemory.Core.Tests.Common;
 
 namespace Stranne.EcsMemory.Core.Tests.Extensions;
-internal sealed class WorldSingletonExtensionsTest
+internal sealed class WorldSingletonExtensionsTests
 {
     private static readonly QueryDescription FooQuery = new QueryDescription().WithAll<Foo>();
 

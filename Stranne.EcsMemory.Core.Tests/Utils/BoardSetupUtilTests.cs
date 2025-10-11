@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace Stranne.EcsMemory.Core.Tests.Utils;
 [NotInParallel]
-internal sealed class BoardSetupUtilTest
+internal sealed class BoardSetupUtilTests
 {
     private static readonly QueryDescription CardIdQuery = new QueryDescription().WithAll<CardId>();
     private static readonly QueryDescription GridPositionQuery = new QueryDescription().WithAll<GridPosition>();
