@@ -8,6 +8,17 @@ This project is an **exploration** of using [Arch ECS](https://arch-ecs.gitbook.
 
 *Features: [deterministic gameplay](Stranne.EcsMemory.Core/Utils/BoardSetupUtil.cs), [command pattern](Stranne.EcsMemory.Core/Commands/), [EventBus integration](Stranne.EcsMemory.Core/Events/), [complete state serialization (save/load)](Stranne.EcsMemory.Core/GameCore.cs), and engine-agnostic game logic.*
 
+## 🏗️ Architecture
+
+This project implements the [Stranne.EcsArchitecture](https://github.com/stranne/Stranne.EcsArchitecture) template, which provides:
+- Layered architecture (Core, Adapter, Contracts, UI)
+- Command pattern infrastructure
+- Event system with Arch.EventBus
+- Deterministic ECS logic
+- Complete testing patterns
+
+For architectural details, see the [Architecture Template](https://github.com/stranne/Stranne.EcsArchitecture/blob/main/ARCHITECTURE-TEMPLATE.md).
+
 ## 🕹️ How the game works
 
 - It’s a classic **Memory** game:
